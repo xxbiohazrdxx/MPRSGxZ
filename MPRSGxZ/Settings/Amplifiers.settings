@@ -1,0 +1,22 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="MPRSGxZ.Settings" GeneratedClassName="Amplifiers">
+  <Profiles />
+  <Settings>
+    <Setting Name="Name" Type="System.Collections.Specialized.StringCollection" Scope="User">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;string&gt;Master&lt;/string&gt;
+  &lt;string&gt;Slave 1&lt;/string&gt;
+  &lt;string&gt;Slave 2&lt;/string&gt;
+&lt;/ArrayOfString&gt;</Value>
+    </Setting>
+    <Setting Name="ZoneCount" Type="System.Int32[]" Scope="User">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ArrayOfInt xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;int&gt;6&lt;/int&gt;
+  &lt;int&gt;6&lt;/int&gt;
+  &lt;int&gt;6&lt;/int&gt;
+&lt;/ArrayOfInt&gt;</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
