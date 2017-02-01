@@ -48,6 +48,8 @@
     <Compile Include="Commands.cs" />
     <Compile Include="Events\SettingChangedEventHandler.cs" />
     <Compile Include="Events\ZonePropertyChangedEventArgs.cs" />
+    <Compile Include="Events\ZonePropertyChangedEventHandler.cs" />
+    <Compile Include="Exceptions\InvalidCommandException.cs" />
     <Compile Include="Exceptions\ZoneNotEnabledException.cs" />
     <Compile Include="Exceptions\ZoneNotLinkedException.cs" />
     <Compile Include="ZoneLinkMode.cs" />

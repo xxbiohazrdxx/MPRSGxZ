@@ -52,9 +52,7 @@ namespace MPRSGxZ
 		private List<int> m_LinkedZones;
 		private decimal m_VolumeFactor;
 
-		public delegate void ZonePropertyChangedEventHandler(ZonePropertyChangedEventArgs e);
-		public event ZonePropertyChangedEventHandler ZonePropertyChanged;
-
+		private event ZonePropertyChangedEventHandler ZonePropertyChangedEvent;
 		private event SettingChangedEventHandler SettingChangedEvent;
 
 		/// <summary>
@@ -82,14 +80,28 @@ namespace MPRSGxZ
 			m_LinkedZones = new List<int>();
 		}
 
-		internal void AttachSettingChangedEvent(SettingChangedEventHandler SettingChanged)
+		internal void AttachEvents(SettingChangedEventHandler SettingChanged, ZonePropertyChangedEventHandler ZonePropertyChanged)
 		{
 			SettingChangedEvent = SettingChanged;
+			ZonePropertyChangedEvent = ZonePropertyChanged;
 		}
 
 		//
 		// Zone Settings - Values such as Name that are permanently stored by the API
 		//
+		[IgnoreDataMember]
+		internal int AmpID
+		{
+			get
+			{
+				return m_AmpID;
+			}
+			set
+			{
+				m_AmpID = value;
+			}
+		}
+
 		[DataMember]
 		public int ZoneID
 		{
@@ -221,7 +233,7 @@ namespace MPRSGxZ
 				if (m_Power != value)
 				{
 					m_Power = value;
-					ZonePropertyChanged(new ZonePropertyChangedEventArgs(m_AmpID, m_ZoneID, Command.Power, Convert.ToInt32(value)));
+					ZonePropertyChangedEvent?.Invoke(new ZonePropertyChangedEventArgs(m_AmpID, m_ZoneID, Command.Power, Convert.ToInt32(value)));
 				}
 			}
 		}
@@ -238,7 +250,7 @@ namespace MPRSGxZ
 				if (m_Mute != value)
 				{
 					m_Mute = value;
-					ZonePropertyChanged(new ZonePropertyChangedEventArgs(m_AmpID, m_ZoneID, Command.Mute, Convert.ToInt32(value)));
+					ZonePropertyChangedEvent?.Invoke(new ZonePropertyChangedEventArgs(m_AmpID, m_ZoneID, Command.Mute, Convert.ToInt32(value)));
 				}
 			}
 		}
@@ -255,7 +267,7 @@ namespace MPRSGxZ
 				if (m_PublicAddress != value)
 				{
 					m_PublicAddress = value;
-					ZonePropertyChanged(new ZonePropertyChangedEventArgs(m_AmpID, m_ZoneID, Command.PublicAddress, Convert.ToInt32(value)));
+					ZonePropertyChangedEvent?.Invoke(new ZonePropertyChangedEventArgs(m_AmpID, m_ZoneID, Command.PublicAddress, Convert.ToInt32(value)));
 				}
 			}
 		}
@@ -272,7 +284,7 @@ namespace MPRSGxZ
 				if (m_DoNotDisturb != value)
 				{
 					m_DoNotDisturb = value;
-					ZonePropertyChanged(new ZonePropertyChangedEventArgs(m_AmpID, m_ZoneID, Command.DoNotDisturb, Convert.ToInt32(value)));
+					ZonePropertyChangedEvent?.Invoke(new ZonePropertyChangedEventArgs(m_AmpID, m_ZoneID, Command.DoNotDisturb, Convert.ToInt32(value)));
 				}
 			}
 		}
@@ -298,7 +310,7 @@ namespace MPRSGxZ
 					}
 
 					m_Volume = value;
-					ZonePropertyChanged(new ZonePropertyChangedEventArgs(m_AmpID, m_ZoneID, Command.Volume, value));
+					ZonePropertyChangedEvent?.Invoke(new ZonePropertyChangedEventArgs(m_AmpID, m_ZoneID, Command.Volume, value));
 				}
 			}
 		}
@@ -324,7 +336,7 @@ namespace MPRSGxZ
 					}
 
 					m_Treble = value;
-					ZonePropertyChanged(new ZonePropertyChangedEventArgs(m_AmpID, m_ZoneID, Command.Treble, value));
+					ZonePropertyChangedEvent?.Invoke(new ZonePropertyChangedEventArgs(m_AmpID, m_ZoneID, Command.Treble, value));
 				}
 			}
 		}
@@ -350,7 +362,7 @@ namespace MPRSGxZ
 					}
 
 					m_Bass = value;
-					ZonePropertyChanged(new ZonePropertyChangedEventArgs(m_AmpID, m_ZoneID, Command.Treble, value));
+					ZonePropertyChangedEvent?.Invoke(new ZonePropertyChangedEventArgs(m_AmpID, m_ZoneID, Command.Treble, value));
 				}
 			}
 		}
@@ -374,7 +386,7 @@ namespace MPRSGxZ
 				}
 
 				m_Balance = value;
-				ZonePropertyChanged(new ZonePropertyChangedEventArgs(m_AmpID, m_ZoneID, Command.Bass, value));
+				ZonePropertyChangedEvent?.Invoke(new ZonePropertyChangedEventArgs(m_AmpID, m_ZoneID, Command.Bass, value));
 			}
 		}
 
@@ -397,7 +409,7 @@ namespace MPRSGxZ
 				}
 
 				m_Source = value;
-				ZonePropertyChanged(new ZonePropertyChangedEventArgs(m_AmpID, m_ZoneID, Command.Source, value));
+				ZonePropertyChangedEvent?.Invoke(new ZonePropertyChangedEventArgs(m_AmpID, m_ZoneID, Command.Source, value));
 			}
 		}
 

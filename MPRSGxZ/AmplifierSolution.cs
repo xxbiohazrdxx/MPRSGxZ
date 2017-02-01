@@ -24,6 +24,8 @@ namespace MPRSGxZ
 		private Amplifier[] m_Amplifiers;
 		private Source[] m_Sources;
 
+		private int m_AmplifierCount;
+
 		private SettingChangedEventHandler SettingChangedEvent;
 
 		/// <summary>
@@ -38,6 +40,8 @@ namespace MPRSGxZ
 			m_AmplifierPort = new AmplifierPort();
 			m_AmplifierPort.PollFrequency = 200;
 			m_AmplifierPort.PortName = "COM1";
+
+			m_AmplifierCount = 3;
 
 			//
 			// All models have 6 zones, and when stacked the 6 zones of the first amp are shared with
@@ -65,7 +69,7 @@ namespace MPRSGxZ
 
 			for(int i = 0; i < 3; i++)
 			{
-				m_Amplifiers[i].AttachSettingChangedEvent(SettingChangedEvent);
+				m_Amplifiers[i].AttachEvents(SettingChangedEvent, Port.ZoneChangedEvent);
 			}
 		}
 
@@ -79,7 +83,7 @@ namespace MPRSGxZ
 		}
 
 		[DataMember]
-		internal AmplifierPort Port
+		public AmplifierPort Port
 		{
 			get
 			{

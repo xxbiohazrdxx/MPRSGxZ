@@ -58,13 +58,15 @@ namespace MPRSGxZ
 			}
 		}
 
-		internal void AttachSettingChangedEvent(SettingChangedEventHandler SettingChanged)
+		internal void AttachEvents(SettingChangedEventHandler SettingChanged, ZonePropertyChangedEventHandler ZonePropertyChanged)
 		{
 			SettingChangedEvent = SettingChanged;
 
 			for(int i = 0; i < 6; i++)
 			{
-				m_Zones[i].AttachSettingChangedEvent(SettingChanged);
+#warning Setting AmpID for zone in AttachEvents
+				m_Zones[i].AmpID = ID;
+				m_Zones[i].AttachEvents(SettingChanged, ZonePropertyChanged);
 			}
 		}
 

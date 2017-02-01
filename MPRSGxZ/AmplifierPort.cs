@@ -4,11 +4,12 @@ using System.Collections.Concurrent;
 using System;
 using System.Runtime.Serialization;
 using MPRSGxZ.Events;
+using MPRSGxZ.Exceptions;
 
 namespace MPRSGxZ
 {
 	[DataContract]
-	internal class AmplifierPort
+	public class AmplifierPort
 	{
 		private ConcurrentQueue<string> m_SendQueue;
 		private ConcurrentQueue<string> m_ReceiveQueue;
@@ -24,6 +25,7 @@ namespace MPRSGxZ
 
 		private bool m_RunThreads;
 
+		private event ZonePropertyChangedEventHandler ZonePropertyChangedEvent;
 		private event SettingChangedEventHandler SettingChangedEvent;
 
 		[DataMember]
@@ -54,16 +56,31 @@ namespace MPRSGxZ
 			}
 		}
 
+		[IgnoreDataMember]
+		internal ZonePropertyChangedEventHandler ZoneChangedEvent
+		{
+			get
+			{
+				return ZonePropertyChangedEvent;
+			}
+		}
+
 		internal AmplifierPort()
 		{
+			InitializePort();
 		}
 
 		[OnDeserialized]
 		private void OnDeserialized(StreamingContext context)
 		{
+			InitializePort();
+		}
+
+		private void InitializePort()
+		{
 			m_SerialPort = new SerialPort()
 			{
-				PortName = m_PortName,
+				PortName = "COM3" /*m_PortName*/,
 				BaudRate = 9600,
 				StopBits = StopBits.One,
 				Parity = Parity.None,
@@ -78,6 +95,8 @@ namespace MPRSGxZ
 			m_PollThread = new Thread(new ThreadStart(Poll));
 			m_SendThread = new Thread(new ThreadStart(ProcessSendQueue));
 			m_ReceiveThread = new Thread(new ThreadStart(ProcessReceiveQueue));
+
+			ZonePropertyChangedEvent += QueueCommand;
 		}
 
 		private void m_SerialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
@@ -101,7 +120,7 @@ namespace MPRSGxZ
 			}
 		}
 
-		internal void Open()
+		public void Open()
 		{
 			m_RunThreads = true;
 
@@ -115,7 +134,7 @@ namespace MPRSGxZ
 			m_ReceiveThread.Start();
 		}
 
-		internal void Close()
+		public void Close()
 		{
 			m_RunThreads = false;
 			m_SerialPort.Close();
@@ -139,15 +158,26 @@ namespace MPRSGxZ
 
 		private void ProcessReceiveQueue()
 		{
-			string DequeuedCommand;
+			string DequeuedResponse;
 
 			while(m_RunThreads)
 			{
 				if(!m_ReceiveQueue.IsEmpty)
 				{
-					if(m_ReceiveQueue.TryDequeue(out DequeuedCommand))
+					if(m_ReceiveQueue.TryDequeue(out DequeuedResponse))
 					{
+						if(DequeuedResponse.Equals(@"Command Error."))
+						{
+							throw new InvalidCommandException();
+						}
 
+						//
+						// All query responses should begin this way
+						//
+						if(DequeuedResponse.StartsWith(@"#>"))
+						{
+
+						}
 					}
 				}
 			}
@@ -172,12 +202,20 @@ namespace MPRSGxZ
 					{
 						string Query = string.Format(UnformattedAmplifierQuery, i);
 
-						m_SendQueue.Enqueue(Query);
+						//m_SendQueue.Enqueue(Query);
 					}
 				}
 
 				Thread.Sleep(m_PollFrequency);
 			}
+		}
+
+		private void QueueCommand(ZonePropertyChangedEventArgs e)
+		{
+			string UnformattedAmplifierQuery = @"<{0}{1}{2}{3}";
+			string Query = string.Format(UnformattedAmplifierQuery, e.AmpID, e.ZoneID, e.Command.CommandString, e.Value.ToString("00"));
+
+			m_SendQueue.Enqueue(Query);
 		}
 	}
 }

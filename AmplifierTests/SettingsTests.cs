@@ -24,7 +24,7 @@ namespace AmplifierTests
 		[TestMethod]
 		public void LinkedZoneSettings()
 		{
-			AmplifierSolution TestingSolution = new AmplifierSolution();
+			AmplifierSolution TestingSolution = new AmplifierSolution(true);
 
 			//var test = TestingSolution.Amplifiers[0].Zones[0].LinkedZones;
 		}
