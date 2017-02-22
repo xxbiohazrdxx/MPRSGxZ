@@ -99,7 +99,6 @@ namespace MPRSGxZ
 			};
 
 			m_SerialPort.ReceivedBytesThreshold = 8;
-			//m_SerialPort.DataReceived += m_SerialPort_DataReceived;
 
 			m_PollThread = new Thread(new ThreadStart(Poll));
 			m_SendThread = new Thread(new ThreadStart(ProcessSendQueue));
@@ -112,23 +111,6 @@ namespace MPRSGxZ
 		internal void AttachEvents(ZonePropertyPollEventHandler ZonePropertyPoll)
 		{
 			ZonePropertyPollEvent = ZonePropertyPoll;
-		}
-
-		private void m_SerialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
-		{
-			SerialPort AmplifierSerialPort = (SerialPort)sender;
-
-			lock(m_SerialPort)
-			{
-				string SerialReceived;
-
-				while (AmplifierSerialPort.BytesToRead != 0)
-				{
-					SerialReceived = AmplifierSerialPort.ReadLine();
-					Console.WriteLine(string.Format(@"RX: {0}", SerialReceived));
-					m_ReceiveQueue.Enqueue(SerialReceived);
-				}
-			}
 		}
 
 		public void Open()
