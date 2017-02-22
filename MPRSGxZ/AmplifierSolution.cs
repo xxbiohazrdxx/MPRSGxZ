@@ -27,6 +27,7 @@ namespace MPRSGxZ
 		private int m_AmplifierCount;
 
 		private SettingChangedEventHandler SettingChangedEvent;
+		private ZonePropertyPollEventHandler ZonePropertyPollEvent;
 
 		/// <summary>
 		/// Default blank constructor used for deserialization
@@ -66,6 +67,10 @@ namespace MPRSGxZ
 		private void OnDeserialized(StreamingContext context)
 		{
 			SettingChangedEvent += SerializeSolution;
+
+			ZonePropertyPollEvent += UpdateZonesFromPoll;
+
+			Port.AttachEvents(ZonePropertyPollEvent);
 
 			for(int i = 0; i < 3; i++)
 			{
@@ -118,6 +123,17 @@ namespace MPRSGxZ
 			internal set
 			{
 				m_Amplifiers = value;
+			}
+		}
+
+		//
+		// Forwards the ZonePropertyPollEventArgs to the proper Amp/Zone
+		//
+		private void UpdateZonesFromPoll(ZonePropertyPollEventArgs e)
+		{
+			lock(Amplifiers[e.AmpID - 1].Zones[e.ZoneID - 1])
+			{
+				Amplifiers[e.AmpID - 1].Zones[e.ZoneID - 1].UpdateFromPollData(e);
 			}
 		}
 

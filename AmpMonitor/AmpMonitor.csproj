@@ -4,15 +4,17 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{9F947C76-0FF2-4BBF-BD94-5AFE9D0FA8A4}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{4DBDB6BA-5F3B-4B00-968B-08E1FFA6ED43}</ProjectGuid>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MPRSGxZ</RootNamespace>
-    <AssemblyName>MPRSGxZ</AssemblyName>
+    <RootNamespace>AmpMonitor</RootNamespace>
+    <AssemblyName>AmpMonitor</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -22,6 +24,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -41,31 +44,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Amplifier.cs" />
-    <Compile Include="AmplifierPort.cs" />
-    <Compile Include="AmplifierSolution.cs" />
-    <Compile Include="AmplifierType.cs" />
-    <Compile Include="Commands.cs" />
-    <Compile Include="Events\SettingChangedEventHandler.cs" />
-    <Compile Include="Events\ZonePropertyChangedEventArgs.cs" />
-    <Compile Include="Events\ZonePropertyChangedEventHandler.cs" />
-    <Compile Include="Events\ZonePropertyPollEventArgs.cs" />
-    <Compile Include="Events\ZonePropertyPollEventHandler.cs" />
-    <Compile Include="Exceptions\InvalidCommandException.cs" />
-    <Compile Include="Exceptions\ZoneNotEnabledException.cs" />
-    <Compile Include="Exceptions\ZoneNotLinkedException.cs" />
-    <Compile Include="ZoneLinkMode.cs" />
-    <Compile Include="Exceptions\AmplifierCountOutOfRangeException.cs" />
-    <Compile Include="Exceptions\ZoneAlreadyLinkedException.cs" />
-    <Compile Include="Exceptions\ZoneCountOutOfRangeException.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Source.cs" />
-    <Compile Include="Zone.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
+    <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\MPRSGxZ\MPRSGxZ.csproj">
+      <Project>{9f947c76-0ff2-4bbf-bd94-5afe9d0fa8a4}</Project>
+      <Name>MPRSGxZ</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

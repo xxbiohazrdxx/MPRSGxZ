@@ -413,6 +413,19 @@ namespace MPRSGxZ
 			}
 		}
 
+		internal void UpdateFromPollData(ZonePropertyPollEventArgs e)
+		{
+			m_PublicAddress = e.PublicAddress;
+			m_Power = e.Power;
+			m_Mute = e.Mute;
+			m_DoNotDisturb = e.DoNotDisturb;
+			m_Volume = e.Volume;
+			m_Treble = e.Treble;
+			m_Bass = e.Bass;
+			m_Balance = e.Balance;
+			m_Source = e.Source;
+		}
+
 		/// <summary>
 		/// Creates a link between another zone and this zone
 		/// </summary>
