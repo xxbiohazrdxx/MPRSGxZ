@@ -132,7 +132,8 @@ namespace MPRSGxZ
 		public void Close()
 		{
 			//
-			// Disable polling so the send queue does not continue to be filled
+			// Disable polling so the send queue does not continue to be filled and
+			// wait for the Poll thread to exit
 			//
 			m_RunPollThread = false;
 			while (m_PollThread.IsAlive) ;
@@ -150,6 +151,9 @@ namespace MPRSGxZ
 			while (m_SendThread.IsAlive ||
 					m_ReceiveThread.IsAlive) ;
 
+			//
+			// Finally close the serial port
+			//
 			m_SerialPort.Close();
 		}
 
