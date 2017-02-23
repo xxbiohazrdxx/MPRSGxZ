@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MPRSGxZ.Events
 {
-	public class ZonePropertyPollEventArgs : EventArgs
+	public class ZonePollEventArgs : EventArgs
 	{
 		private int m_AmpID;
 		private int m_ZoneID;
@@ -20,7 +16,7 @@ namespace MPRSGxZ.Events
 		private int m_Balance;
 		private int m_Source;
 
-		public ZonePropertyPollEventArgs(int AmpID, int ZoneID, bool PublicAddress, bool Power, bool Mute, bool DoNotDisturb, int Volume, int Treble,
+		public ZonePollEventArgs(int AmpID, int ZoneID, bool PublicAddress, bool Power, bool Mute, bool DoNotDisturb, int Volume, int Treble,
 										int Bass, int Balance, int Source)
 		{
 			m_AmpID = AmpID;

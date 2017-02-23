@@ -28,9 +28,9 @@ namespace MPRSGxZ
 		private string m_PortName;
 		private int m_PollFrequency;
 
-		private event ZonePropertyChangedEventHandler ZonePropertyChangedEvent;
+		private event QueueCommandEventHandler QueueCommandEvent;
 		private event SettingChangedEventHandler SettingChangedEvent;
-		private event ZonePropertyPollEventHandler ZonePropertyPollEvent;
+		private event ZonePollEventHandler ZonePollEvent;
 
 		private string m_BufferString;
 
@@ -63,11 +63,11 @@ namespace MPRSGxZ
 		}
 
 		[IgnoreDataMember]
-		internal ZonePropertyChangedEventHandler ZoneChangedEvent
+		internal QueueCommandEventHandler QueueCommand
 		{
 			get
 			{
-				return ZonePropertyChangedEvent;
+				return QueueCommandEvent;
 			}
 		}
 
@@ -105,12 +105,12 @@ namespace MPRSGxZ
 			m_ReceiveThread = new Thread(new ThreadStart(ReadSerialData));
 			m_ReceiveQueueThread = new Thread(new ThreadStart(ProcessReceiveQueue));
 
-			ZonePropertyChangedEvent += QueueCommand;
+			QueueCommandEvent += QueueCommand;
 		}
 
-		internal void AttachEvents(ZonePropertyPollEventHandler ZonePropertyPoll)
+		internal void AttachEvents(ZonePollEventHandler ZonePoll)
 		{
-			ZonePropertyPollEvent = ZonePropertyPoll;
+			ZonePollEvent = ZonePoll;
 		}
 
 		public void Open()
@@ -141,7 +141,7 @@ namespace MPRSGxZ
 			//
 			// Detach events
 			//
-			ZonePropertyPollEvent = null;
+			ZonePollEvent = null;
 
 			//
 			// Gracefully end TX and RX threads
@@ -284,7 +284,7 @@ namespace MPRSGxZ
 							int Balance			= int.Parse(DequeuedResponse.Substring(16, 2));
 							int Source			= int.Parse(DequeuedResponse.Substring(18, 2));
 
-							ZonePropertyPollEvent?.Invoke(new ZonePropertyPollEventArgs(AmpID, ZoneID, PublicAddress, Power, Mute, DoNotDisturb, Volume, Treble, Bass, Balance, Source));
+							ZonePollEvent?.Invoke(new ZonePollEventArgs(AmpID, ZoneID, PublicAddress, Power, Mute, DoNotDisturb, Volume, Treble, Bass, Balance, Source));
 						}
 					}
 				}
@@ -318,7 +318,7 @@ namespace MPRSGxZ
 			}
 		}
 
-		private void QueueCommand(ZonePropertyChangedEventArgs e)
+		private void QueueTransmitCommand(QueueCommandEventArgs e)
 		{
 			string UnformattedAmplifierQuery = @"<{0}{1}{2}{3}";
 			string Query = string.Format(UnformattedAmplifierQuery, e.AmpID, e.ZoneID, e.Command.CommandString, e.Value.ToString("00"));

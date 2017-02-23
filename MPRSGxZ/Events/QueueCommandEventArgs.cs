@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace MPRSGxZ.Events
 {
-	public class ZonePropertyChangedEventArgs : EventArgs
+	public class QueueCommandEventArgs : EventArgs
 	{
 		private int m_AmpID;
 		private int m_ZoneID;
 		private Command m_Command;
 		private int m_Value;
 
-		public ZonePropertyChangedEventArgs(int AmpID, int ZoneID, Command Command, int value)
+		public QueueCommandEventArgs(int AmpID, int ZoneID, Command Command, int value)
 		{
 			m_AmpID = AmpID;
 			m_ZoneID = ZoneID;

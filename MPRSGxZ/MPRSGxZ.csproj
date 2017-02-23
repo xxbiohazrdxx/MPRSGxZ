@@ -46,11 +46,10 @@
     <Compile Include="AmplifierSolution.cs" />
     <Compile Include="AmplifierType.cs" />
     <Compile Include="Commands.cs" />
-    <Compile Include="Events\SettingChangedEventHandler.cs" />
-    <Compile Include="Events\ZonePropertyChangedEventArgs.cs" />
-    <Compile Include="Events\ZonePropertyChangedEventHandler.cs" />
-    <Compile Include="Events\ZonePropertyPollEventArgs.cs" />
-    <Compile Include="Events\ZonePropertyPollEventHandler.cs" />
+    <Compile Include="Events\Delegates.cs" />
+    <Compile Include="Events\QueueCommandEventArgs.cs" />
+    <Compile Include="Events\ZoneChangedEventArgs.cs" />
+    <Compile Include="Events\ZonePollEventArgs.cs" />
     <Compile Include="Exceptions\InvalidCommandException.cs" />
     <Compile Include="Exceptions\ZoneNotEnabledException.cs" />
     <Compile Include="Exceptions\ZoneNotLinkedException.cs" />

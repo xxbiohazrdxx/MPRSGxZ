@@ -30,7 +30,7 @@ namespace MPRSGxZ
 		private int m_ZoneID;
 
 		//
-		// Properties that are built in to the firmware
+		// Amplifier properties stored in the amp hardware
 		//
 		private bool m_Power;
 		private bool m_Mute;
@@ -44,7 +44,7 @@ namespace MPRSGxZ
 		private int m_Source;
 
 		//
-		// Properties not built in to the firmware
+		// Amplifier properties stored in software
 		//
 		private string m_Name;
 		private bool m_Enabled;
@@ -52,8 +52,9 @@ namespace MPRSGxZ
 		private List<int> m_LinkedZones;
 		private decimal m_VolumeFactor;
 
-		private event ZonePropertyChangedEventHandler ZonePropertyChangedEvent;
+		private event QueueCommandEventHandler QueueCommandEvent;
 		private event SettingChangedEventHandler SettingChangedEvent;
+		private event ZoneChangedEventHandler ZoneChangedEvent;
 
 		/// <summary>
 		/// Default blank constructor used for deserialization
@@ -80,14 +81,19 @@ namespace MPRSGxZ
 			m_LinkedZones = new List<int>();
 		}
 
-		internal void AttachEvents(SettingChangedEventHandler SettingChanged, ZonePropertyChangedEventHandler ZonePropertyChanged)
+		/// <summary>
+		/// Attaches events for the zone
+		/// </summary>
+		/// <param name="SettingChanged">The handler for when Zone software settings are changed</param>
+		/// <param name="QueueCommand">The handler to queue a command with the AmplifierPort when Zone hardware settings are changed</param>
+		internal void AttachEvents(SettingChangedEventHandler SettingChanged, QueueCommandEventHandler QueueCommand)
 		{
 			SettingChangedEvent = SettingChanged;
-			ZonePropertyChangedEvent = ZonePropertyChanged;
+			QueueCommandEvent = QueueCommand;
 		}
 
 		//
-		// Zone Settings - Values such as Name that are permanently stored by the API
+		// Properties that are stored by the software
 		//
 		[IgnoreDataMember]
 		internal int AmpID
@@ -219,7 +225,7 @@ namespace MPRSGxZ
 		}
 
 		//
-		// Zone Properties - Values such as Power that are only permanently stored on the amplifier
+		// Properties that are stored by the hardware
 		//
 		[IgnoreDataMember]
 		public bool Power
@@ -233,7 +239,7 @@ namespace MPRSGxZ
 				if (m_Power != value)
 				{
 					m_Power = value;
-					ZonePropertyChangedEvent?.Invoke(new ZonePropertyChangedEventArgs(m_AmpID, m_ZoneID, Command.Power, Convert.ToInt32(value)));
+					QueueCommandEvent?.Invoke(new QueueCommandEventArgs(m_AmpID, m_ZoneID, Command.Power, Convert.ToInt32(value)));
 				}
 			}
 		}
@@ -250,7 +256,7 @@ namespace MPRSGxZ
 				if (m_Mute != value)
 				{
 					m_Mute = value;
-					ZonePropertyChangedEvent?.Invoke(new ZonePropertyChangedEventArgs(m_AmpID, m_ZoneID, Command.Mute, Convert.ToInt32(value)));
+					QueueCommandEvent?.Invoke(new QueueCommandEventArgs(m_AmpID, m_ZoneID, Command.Mute, Convert.ToInt32(value)));
 				}
 			}
 		}
@@ -267,7 +273,7 @@ namespace MPRSGxZ
 				if (m_PublicAddress != value)
 				{
 					m_PublicAddress = value;
-					ZonePropertyChangedEvent?.Invoke(new ZonePropertyChangedEventArgs(m_AmpID, m_ZoneID, Command.PublicAddress, Convert.ToInt32(value)));
+					QueueCommandEvent?.Invoke(new QueueCommandEventArgs(m_AmpID, m_ZoneID, Command.PublicAddress, Convert.ToInt32(value)));
 				}
 			}
 		}
@@ -284,7 +290,7 @@ namespace MPRSGxZ
 				if (m_DoNotDisturb != value)
 				{
 					m_DoNotDisturb = value;
-					ZonePropertyChangedEvent?.Invoke(new ZonePropertyChangedEventArgs(m_AmpID, m_ZoneID, Command.DoNotDisturb, Convert.ToInt32(value)));
+					QueueCommandEvent?.Invoke(new QueueCommandEventArgs(m_AmpID, m_ZoneID, Command.DoNotDisturb, Convert.ToInt32(value)));
 				}
 			}
 		}
@@ -310,7 +316,7 @@ namespace MPRSGxZ
 					}
 
 					m_Volume = value;
-					ZonePropertyChangedEvent?.Invoke(new ZonePropertyChangedEventArgs(m_AmpID, m_ZoneID, Command.Volume, value));
+					QueueCommandEvent?.Invoke(new QueueCommandEventArgs(m_AmpID, m_ZoneID, Command.Volume, value));
 				}
 			}
 		}
@@ -336,7 +342,7 @@ namespace MPRSGxZ
 					}
 
 					m_Treble = value;
-					ZonePropertyChangedEvent?.Invoke(new ZonePropertyChangedEventArgs(m_AmpID, m_ZoneID, Command.Treble, value));
+					QueueCommandEvent?.Invoke(new QueueCommandEventArgs(m_AmpID, m_ZoneID, Command.Treble, value));
 				}
 			}
 		}
@@ -362,7 +368,7 @@ namespace MPRSGxZ
 					}
 
 					m_Bass = value;
-					ZonePropertyChangedEvent?.Invoke(new ZonePropertyChangedEventArgs(m_AmpID, m_ZoneID, Command.Treble, value));
+					QueueCommandEvent?.Invoke(new QueueCommandEventArgs(m_AmpID, m_ZoneID, Command.Treble, value));
 				}
 			}
 		}
@@ -386,7 +392,7 @@ namespace MPRSGxZ
 				}
 
 				m_Balance = value;
-				ZonePropertyChangedEvent?.Invoke(new ZonePropertyChangedEventArgs(m_AmpID, m_ZoneID, Command.Bass, value));
+				QueueCommandEvent?.Invoke(new QueueCommandEventArgs(m_AmpID, m_ZoneID, Command.Bass, value));
 			}
 		}
 
@@ -409,21 +415,76 @@ namespace MPRSGxZ
 				}
 
 				m_Source = value;
-				ZonePropertyChangedEvent?.Invoke(new ZonePropertyChangedEventArgs(m_AmpID, m_ZoneID, Command.Source, value));
+				QueueCommandEvent?.Invoke(new QueueCommandEventArgs(m_AmpID, m_ZoneID, Command.Source, value));
 			}
 		}
 
-		internal void UpdateFromPollData(ZonePropertyPollEventArgs e)
+		/// <summary>
+		/// Processes the polling data and, if a hardware property has changed, updates it and the ZonePropertyChangedEvent
+		/// </summary>
+		/// <param name="e">The ZonePropertyPollEventArgs for this poll result</param>
+		internal void UpdateFromPollData(ZonePollEventArgs e)
 		{
-			m_PublicAddress = e.PublicAddress;
-			m_Power = e.Power;
-			m_Mute = e.Mute;
-			m_DoNotDisturb = e.DoNotDisturb;
-			m_Volume = e.Volume;
-			m_Treble = e.Treble;
-			m_Bass = e.Bass;
-			m_Balance = e.Balance;
-			m_Source = e.Source;
+			bool ValueChanged = false;
+
+			if(m_PublicAddress != e.PublicAddress)
+			{
+				m_PublicAddress = e.PublicAddress;
+				ValueChanged = true;
+			}
+			
+			if(m_Power != e.Power)
+			{
+				m_Power = e.Power;
+				ValueChanged = true;
+			}
+
+			if (m_Mute != e.Mute)
+			{
+				m_Mute = e.Mute;
+				ValueChanged = true;
+			}
+
+			if (m_DoNotDisturb != e.DoNotDisturb)
+			{
+				m_DoNotDisturb = e.DoNotDisturb;
+				ValueChanged = true;
+			}
+
+			if (m_Volume != e.Volume)
+			{
+				m_Volume = e.Volume;
+				ValueChanged = true;
+			}
+
+			if (m_Treble != e.Treble)
+			{
+				m_Treble = e.Treble;
+				ValueChanged = true;
+			}
+
+			if (m_Bass != e.Bass)
+			{
+				m_Bass = e.Bass;
+				ValueChanged = true;
+			}
+
+			if (m_Balance != e.Balance)
+			{
+				m_Balance = e.Balance;
+				ValueChanged = true;
+			}
+
+			if (m_Source != e.Source)
+			{
+				m_Source = e.Source;
+				ValueChanged = true;
+			}
+			
+			if(ValueChanged)
+			{
+				ZoneChangedEvent?.Invoke(new ZoneChangedEventArgs(AmpID, ZoneID));
+			}
 		}
 
 		/// <summary>
