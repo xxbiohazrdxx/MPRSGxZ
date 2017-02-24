@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MPRSGxZ.Events
 {
-	public class QueueCommandEventArgs : EventArgs
+	internal class QueueCommandEventArgs : EventArgs
 	{
 		private int m_AmpID;
 		private int m_ZoneID;

@@ -2,7 +2,7 @@
 
 namespace MPRSGxZ.Events
 {
-	public class ZonePollEventArgs : EventArgs
+	internal class ZonePollEventArgs : EventArgs
 	{
 		private int m_AmpID;
 		private int m_ZoneID;

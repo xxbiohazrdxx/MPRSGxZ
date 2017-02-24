@@ -56,6 +56,8 @@ namespace MPRSGxZ
 		private event SettingChangedEventHandler SettingChangedEvent;
 		private event ZoneChangedEventHandler ZoneChangedEvent;
 
+		private bool Initialized;
+
 		/// <summary>
 		/// Default blank constructor used for deserialization
 		/// </summary>
@@ -86,10 +88,11 @@ namespace MPRSGxZ
 		/// </summary>
 		/// <param name="SettingChanged">The handler for when Zone software settings are changed</param>
 		/// <param name="QueueCommand">The handler to queue a command with the AmplifierPort when Zone hardware settings are changed</param>
-		internal void AttachEvents(SettingChangedEventHandler SettingChanged, QueueCommandEventHandler QueueCommand)
+		internal void AttachEvents(SettingChangedEventHandler SettingChanged, QueueCommandEventHandler QueueCommand, ZoneChangedEventHandler ZoneChanged)
 		{
 			SettingChangedEvent = SettingChanged;
 			QueueCommandEvent = QueueCommand;
+			ZoneChangedEvent = ZoneChanged;
 		}
 
 		//
@@ -481,10 +484,12 @@ namespace MPRSGxZ
 				ValueChanged = true;
 			}
 			
-			if(ValueChanged)
+			if(ValueChanged && Initialized)
 			{
 				ZoneChangedEvent?.Invoke(new ZoneChangedEventArgs(AmpID, ZoneID));
 			}
+
+			Initialized = true;
 		}
 
 		/// <summary>

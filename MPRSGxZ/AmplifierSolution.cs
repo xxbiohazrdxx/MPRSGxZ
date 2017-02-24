@@ -28,6 +28,8 @@ namespace MPRSGxZ
 
 		private SettingChangedEventHandler SettingChangedEvent;
 		private ZonePollEventHandler ZonePollEvent;
+		private ZoneChangedEventHandler ZoneChangedEvent;
+		public ZoneChangedEventHandler ZoneChanged;
 
 		/// <summary>
 		/// Default blank constructor used for deserialization
@@ -66,15 +68,26 @@ namespace MPRSGxZ
 		[OnDeserialized]
 		private void OnDeserialized(StreamingContext context)
 		{
+			//
+			// Set up events inside of the AmplifierSolution
+			//
 			SettingChangedEvent += SerializeSolution;
-
 			ZonePollEvent += UpdateZonesFromPoll;
+			ZoneChangedEvent += delegate(ZoneChangedEventArgs e) {
+				ZoneChanged?.Invoke(e);
+			};
 
+			//
+			// Set up the poll event in the amplifier port
+			//
 			Port.AttachEvents(ZonePollEvent);
 
+			//
+			// Set up the events in each individual zone
+			//
 			for(int i = 0; i < 3; i++)
 			{
-				m_Amplifiers[i].AttachEvents(SettingChangedEvent, Port.QueueCommand);
+				m_Amplifiers[i].AttachEvents(SettingChangedEvent, Port.QueueCommand, ZoneChangedEvent);
 			}
 		}
 
