@@ -4,29 +4,13 @@ namespace MPRSGxZ.Events
 {
 	public class ZoneChangedEventArgs : EventArgs
 	{
-		private int m_AmpID;
-		private int m_ZoneID;
+		public int AmpID { get; internal set; }
+		public int ZoneID { get; internal set; }
 
 		public ZoneChangedEventArgs(int AmpID, int ZoneID)
 		{
-			m_AmpID = AmpID;
-			m_ZoneID = ZoneID;
-		}
-
-		public int AmpID
-		{
-			get
-			{
-				return m_AmpID;
-			}
-		}
-
-		public int ZoneID
-		{
-			get
-			{
-				return m_ZoneID;
-			}
+			this.AmpID = AmpID;
+			this.ZoneID = ZoneID;
 		}
 	}
 }

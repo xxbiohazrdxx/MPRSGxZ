@@ -1,152 +1,107 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.IO;
-using System.IO.Ports;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Threading;
-using System.Xml.Serialization;
-using MPRSGxZ.Exceptions;
-using System.Runtime.Serialization;
-using MPRSGxZ.Events;
-using System.Text;
-using System.Xml;
+﻿using MPRSGxZ.Events;
+using MPRSGxZ.Hardware;
+using MPRSGxZ.Commands;
+using System.Timers;
 
 namespace MPRSGxZ
 {
-	[DataContract]
     public class AmplifierSolution
-    {
-		private AmplifierPort m_AmplifierPort;
-		private Amplifier[] m_Amplifiers;
-		private Source[] m_Sources;
+    {	
+		public int AmplifierCount { get; private set; }
+		public Amplifier[] Amplifiers { get; private set; }
+		public Source[] Sources { get; private set; }
 
-		private int m_AmplifierCount;
+		private AmplifierPort Port;
 
-		private SettingChangedEventHandler SettingChangedEvent;
-		private ZonePollEventHandler ZonePollEvent;
-		private ZoneChangedEventHandler ZoneChangedEvent;
-		public ZoneChangedEventHandler ZoneChanged;
+		private Timer PollTimer;
 
-		/// <summary>
-		/// Default blank constructor used for deserialization
-		/// </summary>
-		public AmplifierSolution()
+		private QueueCommandEvent QueueCommand;
+		public	ZoneChangedEvent ZoneChanged;
+
+		public AmplifierSolution(string PortName, int PollFrequency = 250, int AmplifierCount = 1)
 		{
-		}
+			this.AmplifierCount = AmplifierCount;
 
-		public AmplifierSolution(bool WithDefaults)
-		{
-			m_AmplifierPort = new AmplifierPort();
-			m_AmplifierPort.PollFrequency = 200;
-			m_AmplifierPort.PortName = "COM1";
+			this.Port = new AmplifierPort(PortName);
+			
+			this.PollTimer = new Timer(PollFrequency);
+			PollTimer.Elapsed += PollAmplifiers;
 
-			m_AmplifierCount = 3;
+			QueueCommand += QueueAmplifierCommand;
 
 			//
-			// All models have 6 zones, and when stacked the 6 zones of the first amp are shared with
+			// All models have 6 sources, and when stacked the sources of the first amp are shared with
 			// all other amps.
 			//
-			m_Sources = new Source[6];
+			Sources = new Source[6];
 
 			for(int i = 0; i < 6; i++)
 			{
-				m_Sources[i] = new Source(i + 1);
+				Sources[i] = new Source(i + 1);
 			}
 
-			m_Amplifiers = new Amplifier[3];
+			Amplifiers = new Amplifier[AmplifierCount];
 
-			for(int i = 0; i < 3; i++)
+			for(int i = 0; i < AmplifierCount; i++)
 			{
-				m_Amplifiers[i] = new Amplifier(i + 1);
-			}
-		}
-
-		[OnDeserialized]
-		private void OnDeserialized(StreamingContext context)
-		{
-			//
-			// Set up events inside of the AmplifierSolution
-			//
-			SettingChangedEvent += SerializeSolution;
-			ZonePollEvent += UpdateZonesFromPoll;
-			ZoneChangedEvent += delegate(ZoneChangedEventArgs e) {
-				ZoneChanged?.Invoke(e);
-			};
-
-			//
-			// Set up the poll event in the amplifier port
-			//
-			Port.AttachEvents(ZonePollEvent);
-
-			//
-			// Set up the events in each individual zone
-			//
-			for(int i = 0; i < 3; i++)
-			{
-				m_Amplifiers[i].AttachEvents(SettingChangedEvent, Port.QueueCommand, ZoneChangedEvent);
+				Amplifiers[i] = new Amplifier(i + 1, QueueCommand, ZoneChanged);
 			}
 		}
 
-		private void SerializeSolution()
+		public void Open()
 		{
-			var XMLFile = new FileStream("SerializationTest.xml", FileMode.Create);
-			var Serializer = new DataContractSerializer(typeof(AmplifierSolution));
-			Serializer.WriteObject(XMLFile, this);
-
-			XMLFile.Close();
+			Port.Open();
+			PollTimer.Enabled = true;
 		}
 
-		[DataMember]
-		public AmplifierPort Port
+		public void Close()
 		{
-			get
-			{
-				return m_AmplifierPort;
-			}
-			set
-			{
-				m_AmplifierPort = value;
-			}
+			PollTimer.Enabled = false;
+			Port.Close();
 		}
 
-		[DataMember]
-		public Source[] Sources
+		private void PollAmplifiers(object sender, ElapsedEventArgs e)
 		{
-			get
+			for(int i = 1; i <= AmplifierCount; i++)
 			{
-				return m_Sources;
-			}
-			internal set
-			{
-				m_Sources = value;
-			}
-		}
+				var CurrentAmplifier = Amplifiers[i - 1];
 
-		[DataMember]
-		public Amplifier[] Amplifiers
-		{
-			get
-			{
-				return m_Amplifiers;
-			}
-			internal set
-			{
-				m_Amplifiers = value;
+				lock(CurrentAmplifier)
+				{
+					var CurrentAmpQuery = new Command(BaseCommand.Query, i, 0, 0);
+					var CommandResults = Port.ExecuteCommand(CurrentAmpQuery);
+
+					foreach (string CurrentResult in CommandResults)
+					{
+						int AmpID = int.Parse(CurrentResult.Substring(0, 1));
+						int ZoneID = int.Parse(CurrentResult.Substring(1, 1));
+
+						var CurrentZone = CurrentAmplifier.Zones[ZoneID - 1];
+						var PublicAddress	= int.Parse(CurrentResult.Substring(2, 2)) == 1 ? true : false;
+						var Power			= int.Parse(CurrentResult.Substring(4, 2)) == 1 ? true : false;
+						var Mute			= int.Parse(CurrentResult.Substring(6, 2)) == 1 ? true : false;
+						var DoNotDisturb	= int.Parse(CurrentResult.Substring(8, 2)) == 1 ? true : false;
+						var Volume			= int.Parse(CurrentResult.Substring(10, 2));
+						var Treble			= int.Parse(CurrentResult.Substring(12, 2));
+						var Bass			= int.Parse(CurrentResult.Substring(14, 2));
+						var Balance			= int.Parse(CurrentResult.Substring(16, 2));
+						var Source			= int.Parse(CurrentResult.Substring(18, 2));
+						CurrentZone.UpdateState(PublicAddress, Power, Mute, DoNotDisturb, Volume, Treble, Bass, Balance, Source);
+					}
+				}
 			}
 		}
 
-		//
-		// Forwards the ZonePropertyPollEventArgs to the proper Amp/Zone
-		//
-		private void UpdateZonesFromPoll(ZonePollEventArgs e)
+		private void QueueAmplifierCommand(QueueCommandEventArgs e)
 		{
-			lock(Amplifiers[e.AmpID - 1].Zones[e.ZoneID - 1])
+			int AmpID = e.Command.AmpID;
+			int ZoneID = e.Command.ZoneID;
+
+			var CurrentZone = Amplifiers[AmpID - 1].Zones[ZoneID - 1];
+
+			lock(CurrentZone)
 			{
-				Amplifiers[e.AmpID - 1].Zones[e.ZoneID - 1].UpdateFromPollData(e);
+				var CommandResults = Port.ExecuteCommand(e.Command);
 			}
 		}
 

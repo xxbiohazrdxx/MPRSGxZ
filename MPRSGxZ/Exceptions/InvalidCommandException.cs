@@ -1,16 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MPRSGxZ.Exceptions
 {
 	class InvalidCommandException : Exception
 	{
-		public InvalidCommandException() : base()
-		{
-
-		}
+		public InvalidCommandException(string Message) : base(Message) { }
 	}
 }

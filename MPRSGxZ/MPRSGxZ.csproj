@@ -41,15 +41,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Amplifier.cs" />
+    <Compile Include="Events\ZoneChangedEvent.cs" />
+    <Compile Include="Hardware\Amplifier.cs" />
     <Compile Include="AmplifierPort.cs" />
     <Compile Include="AmplifierSolution.cs" />
     <Compile Include="AmplifierType.cs" />
-    <Compile Include="Commands.cs" />
-    <Compile Include="Events\Delegates.cs" />
+    <Compile Include="Commands\BaseCommand.cs" />
+    <Compile Include="Commands\Command.cs" />
+    <Compile Include="Commands\CommandType.cs" />
+    <Compile Include="Events\QueueCommandEvent.cs" />
     <Compile Include="Events\QueueCommandEventArgs.cs" />
     <Compile Include="Events\ZoneChangedEventArgs.cs" />
-    <Compile Include="Events\ZonePollEventArgs.cs" />
     <Compile Include="Exceptions\InvalidCommandException.cs" />
     <Compile Include="Exceptions\ZoneNotEnabledException.cs" />
     <Compile Include="Exceptions\ZoneNotLinkedException.cs" />
@@ -58,13 +60,15 @@
     <Compile Include="Exceptions\ZoneAlreadyLinkedException.cs" />
     <Compile Include="Exceptions\ZoneCountOutOfRangeException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Source.cs" />
-    <Compile Include="Zone.cs" />
+    <Compile Include="Hardware\Source.cs" />
+    <Compile Include="Hardware\Zone.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Setting\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
