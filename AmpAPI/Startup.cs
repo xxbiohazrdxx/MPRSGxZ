@@ -20,7 +20,7 @@ namespace AmpAPI
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
-			services.Configure<AmplifierSolutionSettings>(Configuration.GetSection("AmplifierSolutionSettings"));
+			services.Configure<AmplifierStackSettings>(Configuration.GetSection("AmplifierStackSettings"));
 			services.AddSingleton<IAmplifierService, AmplifierService>();
 			//services.AddSingleton<IConfiguration>(Configuration);
 			services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);

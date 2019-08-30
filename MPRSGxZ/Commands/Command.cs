@@ -4,7 +4,7 @@ namespace MPRSGxZ.Commands
 {
 	internal class Command : BaseCommand
 	{
-		internal Command(BaseCommand Command, int AmpID, int ZoneID, int Value) : base(Command.Type, Command.CommandString, Command.MinValue, Command.MaxValue)
+		internal Command(BaseCommand Command, int AmpID, int ZoneID, int Value) : base(Command.Type, Command.CommandString, Command.MinValue, Command.MaxValue, Command.ResponseIndex)
 		{
 			if(AmpID < 1 || AmpID > 3)
 			{

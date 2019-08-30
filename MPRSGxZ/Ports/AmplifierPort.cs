@@ -2,9 +2,9 @@
 using System.IO.Ports;
 using MPRSGxZ.Commands;
 
-namespace MPRSGxZ
+namespace MPRSGxZ.Ports
 {
-	public class AmplifierPort
+	internal class AmplifierPort : Port
 	{
 		private SerialPort Port;
 		private object PortLock = new object();
@@ -43,7 +43,7 @@ namespace MPRSGxZ
 			Port.Close();
 		}
 
-		internal string[] ExecuteCommand(Command CommandToExecute)
+		public CommandResponse[] ExecuteCommand(Command CommandToExecute)
 		{
 			lock(PortLock)
 			{
@@ -55,7 +55,7 @@ namespace MPRSGxZ
 					throw new InvalidOperationException("The serial port is in an unknown state.");
 				}
 
-				string[] CommandResult = new string[CommandToExecute.ExpectedLines];
+				CommandResponse[] Response = new CommandResponse[CommandToExecute.ExpectedLines];
 				for (int i = 0; i < CommandToExecute.ExpectedLines; i++)
 				{
 					var CurrentLine = Port.ReadLine();
@@ -68,10 +68,10 @@ namespace MPRSGxZ
 					CurrentLine = CurrentLine.Replace("\r", string.Empty);
 					CurrentLine = CurrentLine.Replace(@"#>", string.Empty);
 
-					CommandResult[i] = CurrentLine;
+					Response[i] = new CommandResponse(CurrentLine);
 				}
 
-				return CommandResult;
+				return Response;
 			}			
 		}
 	}

@@ -2,12 +2,13 @@
 using Microsoft.Extensions.Options;
 using MPRSGxZ;
 using MPRSGxZ.Hardware;
+using System;
 
 namespace AmpAPI.Services
 {
 	public class AmplifierService : IAmplifierService
 	{
-		public AmplifierSolution AmplifierMiddleware { get; private set; }
+		public AmplifierStack AmplifierMiddleware { get; private set; }
 
 		public Amplifier[] Amplifiers
 		{
@@ -24,12 +25,25 @@ namespace AmpAPI.Services
 				return AmplifierMiddleware.Sources;
 			}
 		}
-		private AmplifierSolutionSettings Settings;
+		private AmplifierStackSettings Settings;
 
-		public AmplifierService(IOptions<AmplifierSolutionSettings> Settings)
+		public AmplifierService(IOptions<AmplifierStackSettings> Settings)
 		{
 			this.Settings = Settings.Value;
-			AmplifierMiddleware = new AmplifierSolution(this.Settings.COMPort, this.Settings.PollingFrequency, this.Settings.AmplifierCount);
+
+			if (this.Settings.PortType == ConnectionType.Virtual)
+			{
+				AmplifierMiddleware = new AmplifierStack(this.Settings.PollingFrequency, this.Settings.AmplifierCount);
+			}
+			else if (this.Settings.PortType == ConnectionType.Serial)
+			{
+				AmplifierMiddleware = new AmplifierStack(this.Settings.PortAddress, this.Settings.PollingFrequency, this.Settings.AmplifierCount);
+			}
+			else
+			{
+				throw new NotImplementedException();
+			}
+
 			AmplifierMiddleware.Open();
 		}
 	}

@@ -296,6 +296,7 @@ namespace MPRSGxZ.Hardware
 		/// <summary>
 		/// The calculated volume for this zone based off of the volume factor
 		/// </summary>
+#warning Make readonly in C# 8
 		public int AdjustedVolume
 		{
 			get

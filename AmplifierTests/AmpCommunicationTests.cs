@@ -9,7 +9,7 @@ namespace AmplifierTests
 		[TestMethod]
 		public void AmpZoneControlTest()
 		{
-			var TestAmplifierSolution = new AmplifierSolution(@"COM3");
+			var TestAmplifierSolution = new AmplifierStack(@"COM3");
 			TestAmplifierSolution.Open();
 
 			TestAmplifierSolution.Amplifiers[0].Zones[0].Power = true;

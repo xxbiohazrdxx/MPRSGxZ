@@ -2,28 +2,46 @@
 using MPRSGxZ.Hardware;
 using MPRSGxZ.Commands;
 using System.Timers;
+using MPRSGxZ.Ports;
 
 namespace MPRSGxZ
 {
-    public class AmplifierSolution
+    public class AmplifierStack
     {	
 		public int AmplifierCount { get; private set; }
 		public Amplifier[] Amplifiers { get; private set; }
 		public Source[] Sources { get; private set; }
 
-		private AmplifierPort Port;
+		private Port Port;
 
 		private Timer PollTimer;
 
 		private QueueCommandEvent QueueCommand;
 		public	ZoneChangedEvent ZoneChanged;
 
-		public AmplifierSolution(string PortName, int PollFrequency = 250, int AmplifierCount = 1)
+		public AmplifierStack(string PortName, int PollFrequency = 250, int AmplifierCount = 1)
+		{
+			this.Port = new AmplifierPort(PortName);
+
+			ConstructorHelper(PollFrequency, AmplifierCount);
+		}
+
+		/// <summary>
+		/// Creates a simulated AmplifierStack
+		/// </summary>
+		/// <param name="PollFrequency"></param>
+		/// <param name="AmplifierCount"></param>
+		public AmplifierStack(int PollFrequency = 250, int AmplifierCount = 1)
+		{
+			this.Port = new VirtualAmplifierPort();
+
+			ConstructorHelper(PollFrequency, AmplifierCount);
+		}
+
+		private void ConstructorHelper(int PollFrequency, int AmplifierCount)
 		{
 			this.AmplifierCount = AmplifierCount;
 
-			this.Port = new AmplifierPort(PortName);
-			
 			this.PollTimer = new Timer(PollFrequency);
 			PollTimer.Elapsed += PollAmplifiers;
 
@@ -35,14 +53,14 @@ namespace MPRSGxZ
 			//
 			Sources = new Source[6];
 
-			for(int i = 0; i < 6; i++)
+			for (int i = 0; i < 6; i++)
 			{
 				Sources[i] = new Source(i + 1);
 			}
 
 			Amplifiers = new Amplifier[AmplifierCount];
 
-			for(int i = 0; i < AmplifierCount; i++)
+			for (int i = 0; i < AmplifierCount; i++)
 			{
 				Amplifiers[i] = new Amplifier(i + 1, QueueCommand, ZoneChanged);
 			}
@@ -69,24 +87,21 @@ namespace MPRSGxZ
 				lock(CurrentAmplifier)
 				{
 					var CurrentAmpQuery = new Command(BaseCommand.Query, i, 0, 0);
-					var CommandResults = Port.ExecuteCommand(CurrentAmpQuery);
+					var Responses = Port.ExecuteCommand(CurrentAmpQuery);
 
-					foreach (string CurrentResult in CommandResults)
+					foreach (CommandResponse CurrentResponse in Responses)
 					{
-						int AmpID = int.Parse(CurrentResult.Substring(0, 1));
-						int ZoneID = int.Parse(CurrentResult.Substring(1, 1));
+						var CurrentZone = CurrentAmplifier.Zones[CurrentResponse.ZoneID - 1];
 
-						var CurrentZone = CurrentAmplifier.Zones[ZoneID - 1];
-						var PublicAddress	= int.Parse(CurrentResult.Substring(2, 2)) == 1 ? true : false;
-						var Power			= int.Parse(CurrentResult.Substring(4, 2)) == 1 ? true : false;
-						var Mute			= int.Parse(CurrentResult.Substring(6, 2)) == 1 ? true : false;
-						var DoNotDisturb	= int.Parse(CurrentResult.Substring(8, 2)) == 1 ? true : false;
-						var Volume			= int.Parse(CurrentResult.Substring(10, 2));
-						var Treble			= int.Parse(CurrentResult.Substring(12, 2));
-						var Bass			= int.Parse(CurrentResult.Substring(14, 2));
-						var Balance			= int.Parse(CurrentResult.Substring(16, 2));
-						var Source			= int.Parse(CurrentResult.Substring(18, 2));
-						CurrentZone.UpdateState(PublicAddress, Power, Mute, DoNotDisturb, Volume, Treble, Bass, Balance, Source);
+						CurrentZone.UpdateState(CurrentResponse.PublicAddress,
+												CurrentResponse.Power,
+												CurrentResponse.Mute,
+												CurrentResponse.DoNotDisturb,
+												CurrentResponse.Volume,
+												CurrentResponse.Treble,
+												CurrentResponse.Bass,
+												CurrentResponse.Balance,
+												CurrentResponse.Source);
 					}
 				}
 			}

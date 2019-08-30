@@ -6,11 +6,12 @@ namespace AmpMonitor
 {
 	class Program
 	{
-		private static AmplifierSolution AmpInterface;
+		private static AmplifierStack AmpInterface;
 
 		static void Main(string[] args)
 		{
-			AmpInterface = new AmplifierSolution(@"COM3");
+			AmpInterface = new AmplifierStack(@"COM3");
+			//AmpInterface = new AmplifierStack();
 			AmpInterface.ZoneChanged += ZoneChanged;
 			AmpInterface.Open();
 

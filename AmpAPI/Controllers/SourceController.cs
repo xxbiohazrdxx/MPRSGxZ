@@ -11,10 +11,10 @@ namespace AmpAPI.Controllers
     [ApiController]
     public class SourceController : ControllerBase
     {
-		private AmplifierSolutionSettings Settings;
+		private AmplifierStackSettings Settings;
 		private IAmplifierService AmplifierService;
 
-		public SourceController(IOptions<AmplifierSolutionSettings> Settings, IAmplifierService AmplifierService)
+		public SourceController(IOptions<AmplifierStackSettings> Settings, IAmplifierService AmplifierService)
 		{
 			this.Settings = Settings.Value;
 			this.AmplifierService = AmplifierService;

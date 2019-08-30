@@ -14,7 +14,7 @@ namespace AmplifierTests
 		public void ZoneChangedEventTest()
 		{
 			_ZoneChangedCalled = false;
-			var TestAmplifierSolution = new AmplifierSolution(@"COM3");
+			var TestAmplifierSolution = new AmplifierStack(@"COM3");
 			TestAmplifierSolution.Open();
 
 			TestAmplifierSolution.ZoneChanged += ZoneChanged;

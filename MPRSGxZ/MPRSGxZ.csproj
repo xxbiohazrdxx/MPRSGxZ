@@ -41,10 +41,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\CommandResponse.cs" />
     <Compile Include="Events\ZoneChangedEvent.cs" />
     <Compile Include="Hardware\Amplifier.cs" />
-    <Compile Include="AmplifierPort.cs" />
-    <Compile Include="AmplifierSolution.cs" />
+    <Compile Include="Ports\AmplifierPort.cs" />
+    <Compile Include="AmplifierStack.cs" />
     <Compile Include="AmplifierType.cs" />
     <Compile Include="Commands\BaseCommand.cs" />
     <Compile Include="Commands\Command.cs" />
@@ -55,6 +56,8 @@
     <Compile Include="Exceptions\InvalidCommandException.cs" />
     <Compile Include="Exceptions\ZoneNotEnabledException.cs" />
     <Compile Include="Exceptions\ZoneNotLinkedException.cs" />
+    <Compile Include="Ports\Port.cs" />
+    <Compile Include="Ports\VirtualAmplifierPort.cs" />
     <Compile Include="ZoneLinkMode.cs" />
     <Compile Include="Exceptions\AmplifierCountOutOfRangeException.cs" />
     <Compile Include="Exceptions\ZoneAlreadyLinkedException.cs" />
