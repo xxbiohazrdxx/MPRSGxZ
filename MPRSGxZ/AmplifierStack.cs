@@ -21,7 +21,7 @@ namespace MPRSGxZ
 
 		public AmplifierStack(string PortName, int PollFrequency = 250, int AmplifierCount = 1)
 		{
-			this.Port = new AmplifierPort(PortName);
+			this.Port = new SerialAmplifierPort(PortName);
 
 			ConstructorHelper(PollFrequency, AmplifierCount);
 		}

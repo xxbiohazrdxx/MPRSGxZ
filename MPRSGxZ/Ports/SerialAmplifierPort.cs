@@ -4,12 +4,12 @@ using MPRSGxZ.Commands;
 
 namespace MPRSGxZ.Ports
 {
-	internal class AmplifierPort : IPort
+	internal class SerialAmplifierPort : IPort
 	{
 		private SerialPort Port;
 		private object PortLock = new object();
 
-		internal AmplifierPort(string PortName)
+		internal SerialAmplifierPort(string PortName)
 		{
 			Port = new SerialPort()
 			{
