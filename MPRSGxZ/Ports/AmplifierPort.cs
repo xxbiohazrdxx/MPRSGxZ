@@ -4,7 +4,7 @@ using MPRSGxZ.Commands;
 
 namespace MPRSGxZ.Ports
 {
-	internal class AmplifierPort : Port
+	internal class AmplifierPort : IPort
 	{
 		private SerialPort Port;
 		private object PortLock = new object();

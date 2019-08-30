@@ -56,7 +56,7 @@
     <Compile Include="Exceptions\InvalidCommandException.cs" />
     <Compile Include="Exceptions\ZoneNotEnabledException.cs" />
     <Compile Include="Exceptions\ZoneNotLinkedException.cs" />
-    <Compile Include="Ports\Port.cs" />
+    <Compile Include="Ports\IPort.cs" />
     <Compile Include="Ports\VirtualAmplifierPort.cs" />
     <Compile Include="ZoneLinkMode.cs" />
     <Compile Include="Exceptions\AmplifierCountOutOfRangeException.cs" />

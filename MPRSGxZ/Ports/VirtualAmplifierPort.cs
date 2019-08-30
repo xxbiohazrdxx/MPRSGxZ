@@ -3,7 +3,7 @@ using MPRSGxZ.Commands;
 
 namespace MPRSGxZ.Ports
 {
-	internal class VirtualAmplifierPort : Port
+	internal class VirtualAmplifierPort : IPort
 	{
 		private object PortLock = new object();
 		private string[] VirtualAmplifierState;

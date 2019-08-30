@@ -2,7 +2,7 @@
 
 namespace MPRSGxZ.Ports
 {
-    internal interface Port
+    internal interface IPort
     {
         void Open();
         void Close();

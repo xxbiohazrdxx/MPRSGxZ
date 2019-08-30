@@ -12,7 +12,7 @@ namespace MPRSGxZ
 		public Amplifier[] Amplifiers { get; private set; }
 		public Source[] Sources { get; private set; }
 
-		private Port Port;
+		private IPort Port;
 
 		private Timer PollTimer;
 
