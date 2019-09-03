@@ -8,6 +8,16 @@ namespace AmplifierTests
 	public class AmpCommunicationTests
 	{
 		[TestMethod]
+		public void AmpPollTest()
+		{
+			var SerialServer = new IPEndPoint(IPAddress.Parse("10.1.4.73"), 23);
+			var TestAmplifierSolution = new AmplifierStack(SerialServer);
+			TestAmplifierSolution.Open();
+
+			System.Threading.Thread.Sleep(new System.TimeSpan(0, 5, 0));
+		}
+
+		[TestMethod]
 		public void AmpZoneControlTest()
 		{
 			//var TestAmplifierSolution = new AmplifierStack(@"COM3");

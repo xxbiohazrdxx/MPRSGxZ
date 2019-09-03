@@ -31,10 +31,9 @@ namespace MPRSGxZ.Ports
 			Writer.AutoFlush = true;
 
 			Reader = new StreamReader(Stream, System.Text.Encoding.ASCII);
-			
+
 			Writer.WriteLine();
 			Reader.ReadLine();
-			var T = Reader.Peek();
 
 			if (Reader.Peek() != '#')
 			{
@@ -67,12 +66,26 @@ namespace MPRSGxZ.Ports
 				{
 					var CurrentLine = Reader.ReadLine();
 
+					//
+					// Read the additional CR
+					//
+					if (Reader.Peek() != 13)
+					{
+						throw new InvalidOperationException("The serial port is in an unknown state.");
+					}
+
+					var ExtraNewline = Reader.ReadLine();
+
+					if (ExtraNewline != string.Empty)
+					{
+						throw new InvalidOperationException("The serial port is in an unknown state.");
+					}
+
 					if (!CurrentLine.StartsWith(@"#>") && !CurrentLine.EndsWith("\r"))
 					{
 						throw new InvalidOperationException("The serial port is in an unknown state.");
 					}
 
-					CurrentLine = CurrentLine.Replace("\r", string.Empty);
 					CurrentLine = CurrentLine.Replace(@"#>", string.Empty);
 
 					Response[i] = new CommandResponse(CurrentLine);
