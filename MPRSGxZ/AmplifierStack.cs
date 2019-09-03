@@ -3,6 +3,7 @@ using MPRSGxZ.Hardware;
 using MPRSGxZ.Commands;
 using System.Timers;
 using MPRSGxZ.Ports;
+using System.Net;
 
 namespace MPRSGxZ
 {
@@ -34,6 +35,13 @@ namespace MPRSGxZ
 		public AmplifierStack(int PollFrequency = 250, int AmplifierCount = 1)
 		{
 			this.Port = new VirtualAmplifierPort();
+
+			ConstructorHelper(PollFrequency, AmplifierCount);
+		}
+
+		public AmplifierStack(IPEndPoint ServerEndpoint, int PollFrequency = 250, int AmplifierCount = 1)
+		{
+			this.Port = new IPAmplifierPort(ServerEndpoint);
 
 			ConstructorHelper(PollFrequency, AmplifierCount);
 		}

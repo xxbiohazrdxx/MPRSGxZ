@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MPRSGxZ;
+using System.Net;
 
 namespace AmplifierTests
 {
@@ -9,7 +10,9 @@ namespace AmplifierTests
 		[TestMethod]
 		public void AmpZoneControlTest()
 		{
-			var TestAmplifierSolution = new AmplifierStack(@"COM3");
+			//var TestAmplifierSolution = new AmplifierStack(@"COM3");
+			var SerialServer = new IPEndPoint(IPAddress.Parse("10.1.4.73"), 23);
+			var TestAmplifierSolution = new AmplifierStack(SerialServer);
 			TestAmplifierSolution.Open();
 
 			TestAmplifierSolution.Amplifiers[0].Zones[0].Power = true;
