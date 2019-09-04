@@ -1,6 +1,4 @@
-﻿using MPRSGxZ.Exceptions;
-using System;
-using MPRSGxZ.Events;
+﻿using MPRSGxZ.Events;
 
 namespace MPRSGxZ.Hardware
 {

@@ -1,13 +1,13 @@
-﻿using MPRSGxZ.Events;
+﻿using MPRSGxZ.Commands;
+using MPRSGxZ.Events;
 using MPRSGxZ.Hardware;
-using MPRSGxZ.Commands;
-using System.Timers;
 using MPRSGxZ.Ports;
 using System.Net;
+using System.Timers;
 
 namespace MPRSGxZ
 {
-    public class AmplifierStack
+	public class AmplifierStack
     {	
 		public int AmplifierCount { get; private set; }
 		public Amplifier[] Amplifiers { get; private set; }

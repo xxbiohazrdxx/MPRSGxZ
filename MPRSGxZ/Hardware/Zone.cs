@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using MPRSGxZ.Commands;
+﻿using MPRSGxZ.Commands;
 using MPRSGxZ.Events;
-using MPRSGxZ.Exceptions;
+using System;
+using System.Collections.Generic;
 
 namespace MPRSGxZ.Hardware
 {

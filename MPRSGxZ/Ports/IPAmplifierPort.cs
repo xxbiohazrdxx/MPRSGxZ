@@ -1,8 +1,8 @@
-﻿using System;
-using MPRSGxZ.Commands;
+﻿using MPRSGxZ.Commands;
+using System;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
-using System.IO;
 
 namespace MPRSGxZ.Ports
 {

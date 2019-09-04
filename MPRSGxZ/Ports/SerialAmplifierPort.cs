@@ -1,6 +1,6 @@
-﻿using System;
+﻿using MPRSGxZ.Commands;
+using System;
 using System.IO.Ports;
-using MPRSGxZ.Commands;
 
 namespace MPRSGxZ.Ports
 {
