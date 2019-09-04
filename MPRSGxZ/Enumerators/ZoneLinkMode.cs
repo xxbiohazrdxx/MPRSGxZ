@@ -1,4 +1,4 @@
-﻿namespace MPRSGxZ
+﻿namespace MPRSGxZ.Enumerators
 {
 	public enum ZoneLinkMode
 	{

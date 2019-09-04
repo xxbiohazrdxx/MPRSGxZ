@@ -47,7 +47,7 @@
     <Compile Include="Ports\IPAmplifierPort.cs" />
     <Compile Include="Ports\SerialAmplifierPort.cs" />
     <Compile Include="AmplifierStack.cs" />
-    <Compile Include="AmplifierType.cs" />
+    <Compile Include="Enumerators\AmplifierType.cs" />
     <Compile Include="Commands\BaseCommand.cs" />
     <Compile Include="Commands\Command.cs" />
     <Compile Include="Commands\CommandType.cs" />
@@ -59,7 +59,7 @@
     <Compile Include="Exceptions\ZoneNotLinkedException.cs" />
     <Compile Include="Ports\IPort.cs" />
     <Compile Include="Ports\VirtualAmplifierPort.cs" />
-    <Compile Include="ZoneLinkMode.cs" />
+    <Compile Include="Enumerators\ZoneLinkMode.cs" />
     <Compile Include="Exceptions\AmplifierCountOutOfRangeException.cs" />
     <Compile Include="Exceptions\ZoneAlreadyLinkedException.cs" />
     <Compile Include="Exceptions\ZoneCountOutOfRangeException.cs" />
