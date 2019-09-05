@@ -42,6 +42,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\CommandResponse.cs" />
+    <Compile Include="Commands\QueryCommand.cs" />
+    <Compile Include="Commands\SetCommand.cs" />
     <Compile Include="Events\ZoneChangedEvent.cs" />
     <Compile Include="Hardware\Amplifier.cs" />
     <Compile Include="Ports\IPAmplifierPort.cs" />

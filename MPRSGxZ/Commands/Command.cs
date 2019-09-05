@@ -1,17 +1,34 @@
 ﻿using MPRSGxZ.Exceptions;
+using System;
 
 namespace MPRSGxZ.Commands
 {
 	internal class Command : BaseCommand
 	{
-		internal Command(BaseCommand Command, int AmpID, int ZoneID, int Value) : base(Command.Type, Command.CommandString, Command.MinValue, Command.MaxValue, Command.ResponseIndex)
+		private BaseCommand _BaseCommand;
+		public CommandType Type { get; private set; }
+		public int ResponseIndex
 		{
-			if(AmpID < 1 || AmpID > 3)
+			get
+			{
+				if (_BaseCommand is SetCommand)
+				{
+					var Set = (SetCommand)this._BaseCommand;
+					return Set.ResponseIndex;
+				}
+
+				throw new InvalidOperationException(@"ResponseIndex is not valid on a QueryCommand");
+			}
+		}
+
+		internal Command(BaseCommand Command, int AmpID, int ZoneID, int Value) : base(Command.MinValue, Command.MaxValue)
+		{
+			if (AmpID < 1 || AmpID > 3)
 			{
 				throw new InvalidCommandException("The Amp ID for this command is not valid.");
 			}
 
-			if(ZoneID < 0 || ZoneID > 6)
+			if (ZoneID < 0 || ZoneID > 6)
 			{
 				throw new InvalidCommandException("The Zone ID for this command is not valid.");
 			}
@@ -21,12 +38,15 @@ namespace MPRSGxZ.Commands
 				throw new InvalidCommandException("The value for this command is not valid.");
 			}
 
+			_BaseCommand = Command;
 			this.AmpID = AmpID;
 			this.ZoneID = ZoneID;
 			this.Value = Value;
 
-			if(Command.Type == CommandType.Query)
+			if (Command is QueryCommand)
 			{
+				Type = CommandType.Query;
+
 				if (Value == 0)
 				{
 					this.ExpectedLines = 6;
@@ -38,20 +58,22 @@ namespace MPRSGxZ.Commands
 			}
 			else
 			{
-				this.ExpectedLines = 0;
+				Type = CommandType.Set;
 			}
 		}
 
 		public static implicit operator string(Command Command)
 		{
-			if(Command.Type == CommandType.Set)
+			if (Command._BaseCommand is QueryCommand)
 			{
-				return $"<{Command.AmpID}{Command.ZoneID}{Command.CommandString}{Command.Value:D2}";
+				var Query = (QueryCommand)Command._BaseCommand;
+				return (string)Query;
 			}
 			else
 			{
-				return $"?{Command.AmpID}{Command.ZoneID}";
-			}	
+				var Set = (SetCommand)Command._BaseCommand;
+				return (string)Set;
+			}
 		}
 	}
 }
