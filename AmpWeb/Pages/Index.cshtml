@@ -1,0 +1,147 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+    <link rel="apple-touch-icon" sizes="57x57" href="img/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="img/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="img/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="img/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="img/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="img/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="img/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="img/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="img/apple-icon-180x180.png">
+
+    <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="img/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="img/favicon-16x16.png">
+
+    <!-- Anroid -->
+    <link rel="icon" type="image/png" sizes="192x192" href="img/android-icon-192x192.png">
+    <link rel="manifest" href="img/manifest.json">
+
+    <!-- IE -->
+    <meta name="msapplication-config" content="img/browserconfig.xml" />
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="img/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+
+    <title>Home Audio</title>
+
+    <!-- Path to Framework7 Library CSS-->
+    <link rel="stylesheet" href="dist/css/framework7.ios.min.css">
+    <!-- Path to your custom app styles-->
+    <link rel="stylesheet" href="css/AmpWeb.css">
+
+</head>
+<body>
+    <!-- Status bar overlay for fullscreen mode-->
+    <div class="statusbar-overlay"></div>
+    <!-- Panels overlay-->
+    <!-- Views-->
+    <div class="views">
+        <!-- Your main view, should have "view-main" class-->
+        <div class="view view-main">
+            <!-- Top Navbar-->
+            <div class="navbar">
+                <!-- Navbar inner for Index page-->
+                <div data-page="index" class="navbar-inner">
+                    <div class="left">
+                        <a id="ZonePrev" href="#" class="link icon-only"> <i class="icon icon-prev"></i></a>
+                    </div>
+                    <!-- We have home navbar without left link-->
+                    <div class="center sliding" id="ZoneName">Zone Name</div>
+                    <div class="right">
+                        <a id="ZoneNext" href="#" class="link icon-only"> <i class="icon icon-next"></i></a>
+                    </div>
+                </div>
+            </div>
+            <!-- Pages, because we need fixed-through navbar and toolbar, it has additional appropriate classes-->
+            <div class="pages navbar-through toolbar-through">
+                <!-- Index Page-->
+                <div data-page="index" class="page">
+                    <!-- Scrollable page content-->
+                    <div class="page-content">
+                        <div class="content-block-title">Control</div>
+                        <div class="list-block">
+                            <ul>
+                                <li>
+                                    <div class="item-content">
+                                        <div class="item-media"><i class="icon icon-form-toggle"></i></div>
+                                        <div class="item-inner">
+                                            <div class="item-title label">Power</div>
+                                            <div class="item-input">
+                                                <label class="label-switch">
+                                                    <input id="PowerCheckbox" type="checkbox">
+                                                    <div class="checkbox"></div>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="item-content">
+                                        <div class="item-media"><i class="icon icon-form-toggle"></i></div>
+                                        <div class="item-inner">
+                                            <div class="item-title label">Mute</div>
+                                            <div class="item-input DisableOnPowerOff">
+                                                <label class="label-switch">
+                                                    <input id="MuteCheckbox" type="checkbox">
+                                                    <div class="checkbox"></div>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="item-content">
+                                        <div class="item-media"><i class="icon icon-form-settings"></i></div>
+                                        <div class="item-inner">
+                                            <div class="item-title label">Source</div>
+                                            <div class="item-input DisableOnPowerOff">
+                                                <input type="text" placeholder="Source" readonly id="SourcePicker">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="content-block-title">Volume</div>
+                        <div class="content-block">
+                            <div class="content-block-inner">
+                                <div class="item-input DisableOnPowerOff">
+                                    <div class="range-slider">
+                                        <input id="VolumeSlider" type="range" min="0" max="38" step="1">
+                                    </div>
+                                </div>
+                                <div class="DisableOnPowerOff" style="text-align: center; width: 50%; margin: auto;">
+                                    <div id="VolumeDown" style="display: inline; font-size: 30pt; font-family:IOS9-Icons-Regular,Arial; color: #DD3214"></div>
+                                    <div id="VolumeDisplay" class="content-block-title" style="top: -0.1em; font-size: 30pt; display: inline">00</div>
+                                    <div id="VolumeUp" style="display: inline; font-size: 30pt; font-family:IOS9-Icons-Regular,Arial; color: #327BFB"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Path to Framework7 Library JS-->
+    <script type="text/javascript" src="dist/js/framework7.min.js"></script>
+    <!-- Path to your app js-->
+    <!-- <script src="js/host.js"></script> -->
+    <script src="~/lib/signalr/dist/browser/signalr.js"></script>
+    <script type="text/javascript" src="js/AmpWeb.js"></script>
+    <script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>
+
+</body>
+</html>
+
+@page
+@model AmpWeb.Pages.IndexModel
+@{
+}

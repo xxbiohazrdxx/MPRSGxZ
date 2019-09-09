@@ -14,9 +14,4 @@
     <ProjectReference Include="..\MPRSGxZ\MPRSGxZ.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="wwwroot\" />
-    <Folder Include="Pages\" />
-  </ItemGroup>
-
 </Project>
