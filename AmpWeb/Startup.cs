@@ -49,10 +49,12 @@ namespace AmpWeb
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapHub<AmpHub>("/amp");
+
                 endpoints.MapGet("/", async context =>
                 {
                     await context.Response.WriteAsync("Hello World!");
                 });
+
                 endpoints.MapControllerRoute("api", "{controller=Amplifier}/{action=Get}/{id?}");
             });
         }

@@ -59,12 +59,6 @@
     <Compile Include="LinkedZoneTests.cs" />
     <Compile Include="EventTests.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\MPRSGxZ\MPRSGxZ.csproj">
-      <Project>{9f947c76-0ff2-4bbf-bd94-5afe9d0fa8a4}</Project>
-      <Name>MPRSGxZ</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

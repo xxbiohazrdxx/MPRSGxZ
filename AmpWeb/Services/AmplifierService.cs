@@ -25,23 +25,42 @@ namespace AmpWeb.Services
 				return AmplifierMiddleware.Sources;
 			}
 		}
-		private AmplifierStackSettings Settings;
+		private AmplifierStackSettings _Settings;
 
 		public AmplifierService(IOptions<AmplifierStackSettings> Settings)
 		{
-			this.Settings = Settings.Value;
+			_Settings = Settings.Value;
 
-			if (this.Settings.PortType == ConnectionType.Virtual)
+			if (_Settings.PortType == ConnectionType.Virtual)
 			{
-				AmplifierMiddleware = new AmplifierStack(this.Settings.PollingFrequency, this.Settings.AmplifierCount);
+				AmplifierMiddleware = new AmplifierStack(_Settings.PollingFrequency, _Settings.AmplifierCount);
 			}
-			else if (this.Settings.PortType == ConnectionType.Serial)
+			else if (_Settings.PortType == ConnectionType.Serial)
 			{
-				AmplifierMiddleware = new AmplifierStack(this.Settings.PortAddress, this.Settings.PollingFrequency, this.Settings.AmplifierCount);
+				AmplifierMiddleware = new AmplifierStack(_Settings.PortAddress, _Settings.PollingFrequency, _Settings.AmplifierCount);
+			}
+			else if (_Settings.PortType == ConnectionType.IP)
+			{
+				throw new NotImplementedException();
 			}
 			else
 			{
-				throw new NotImplementedException();
+				throw new InvalidOperationException();
+			}
+
+			for (int i = 0; i < 6; i++)
+			{
+				AmplifierMiddleware.Sources[i].Enabled = _Settings.Sources[i].Enabled;
+				AmplifierMiddleware.Sources[i].Name = _Settings.Sources[i].Name;
+			}
+			
+			for (int i = 0; i < _Settings.AmplifierCount; i++)
+			{
+				for (int j = 0; j < 6; j++)
+				{
+					AmplifierMiddleware.Amplifiers[i].Zones[j].Enabled = _Settings.Amplifiers[i].Zones[j].Enabled;
+					AmplifierMiddleware.Amplifiers[i].Zones[j].Name = _Settings.Amplifiers[i].Zones[j].Name;
+				}
 			}
 
 			AmplifierMiddleware.Open();
