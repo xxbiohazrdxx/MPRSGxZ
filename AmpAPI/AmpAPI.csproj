@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\NewLib\MPRSGxZ.csproj" />
+    <ProjectReference Include="..\MPRSGxZ\MPRSGxZ.csproj" />
   </ItemGroup>
 
 </Project>

@@ -10,8 +10,8 @@ namespace AmpMonitor
 
 		static void Main(string[] args)
 		{
-			AmpInterface = new AmplifierStack(@"COM3");
-			//AmpInterface = new AmplifierStack();
+			//AmpInterface = new AmplifierStack(@"COM3");
+			AmpInterface = new AmplifierStack();
 			AmpInterface.ZoneChanged += ZoneChanged;
 			AmpInterface.Open();
 
@@ -31,8 +31,8 @@ namespace AmpMonitor
 		{
 			Console.SetCursorPosition(0, 0);
 
-			foreach(var CurrentAmp in AmpInterface.Amplifiers)
-			{	
+			foreach (var CurrentAmp in AmpInterface.Amplifiers)
+			{
 				Console.BackgroundColor = ConsoleColor.DarkGreen;
 				Console.ForegroundColor = ConsoleColor.White;
 				Console.WriteLine($"==AMP {CurrentAmp.ID}=============================================");
