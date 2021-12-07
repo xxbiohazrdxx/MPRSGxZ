@@ -18,6 +18,8 @@
 		public decimal VolumeFactor { get; private set; }
 		public int AdjustedVolume { get; private set; }
 
+		internal ZoneModel() { }
+
 		public ZoneModel(int AmpID, int ZoneID, bool Power, bool Mute, bool PublicAddress, bool DoNotDisturb, int Volume, 
 							int Treble, int Bass, int Balance, int Source, string Name, bool Enabled, decimal VolumeFactor, int AdjustedVolume)
 		{

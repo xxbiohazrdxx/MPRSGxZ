@@ -26,6 +26,7 @@ namespace AmpAPI
 			services.AddSingleton<IAmplifierService, AmplifierService>();
 			//services.AddSingleton<IConfiguration>(Configuration);
 			services.AddRazorPages();
+			//services.AddRouting();
 			//services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 		}
 
@@ -47,6 +48,7 @@ namespace AmpAPI
 			app.UseEndpoints(endpoints =>
 			{
 				endpoints.MapRazorPages();
+				endpoints.MapControllers();
 			});
 		}
 	}

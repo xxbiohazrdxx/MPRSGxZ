@@ -3,8 +3,10 @@
 	public class Source
 	{
 		public int ID { get; internal set; }
-		public string Name;
-		public bool Enabled;
+		public string Name { get; set; }
+		public bool Enabled { get; set; }
+
+		internal Source() { }
 
 		internal Source(int ID)
 		{

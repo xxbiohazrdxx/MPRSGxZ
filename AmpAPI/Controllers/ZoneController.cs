@@ -4,14 +4,13 @@ using AmpAPI.Settings;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using MPRSGxZ.Hardware;
-using System.Collections.Generic;
 
 namespace AmpAPI.Controllers
 {
-    [Route("api/amplifier/{amplifierID:int:range(1,3)}/[controller]")]
-    [ApiController]
-    public class ZoneController : ControllerBase
-    {
+	[Route("api/amplifier/{amplifierID:int:range(1,3)}/[controller]")]
+	[ApiController]
+	public class ZoneController : ControllerBase
+	{
 		private AmplifierStackSettings Settings;
 		private IAmplifierService AmplifierService;
 
@@ -23,22 +22,37 @@ namespace AmpAPI.Controllers
 
 		// GET: api/Zone
 		[HttpGet]
-        public IEnumerable<Zone> Get([FromRoute]int AmplifierID)
-        {
-            return AmplifierService.Amplifiers[AmplifierID - 1].Zones;
-        }
+		public IActionResult Get([FromRoute]int AmplifierID)
+		{
+			if (AmplifierID > AmplifierService.Amplifiers.Length)
+			{
+				return NotFound();
+			}
 
-        // GET: api/Zone/5
-        [HttpGet("{id:int:range(1,6)}")]
-        public Zone Get([FromRoute]int AmplifierID, int id)
-        {
-			return AmplifierService.Amplifiers[AmplifierID - 1].Zones[id - 1];
+			return Ok(AmplifierService.Amplifiers[AmplifierID - 1].Zones);
+		}
+
+		// GET: api/Zone/5
+		[HttpGet("{id:int:range(1,6)}")]
+		public IActionResult Get([FromRoute]int AmplifierID, int id)
+		{
+			if (AmplifierID > AmplifierService.Amplifiers.Length)
+			{
+				return NotFound();
+			}
+
+			return Ok(AmplifierService.Amplifiers[AmplifierID - 1].Zones[id - 1]);
 		}
 
 		// PUT: api/Zone/5
 		[HttpPut("{ZoneID:int:range(1,6)}")]
-		public void Put([FromRoute]int AmplifierID, int ZoneID, ZoneModel PutZone)
+		public IActionResult Put([FromRoute]int AmplifierID, int ZoneID, ZoneModel PutZone)
 		{
+			if (AmplifierID > AmplifierService.Amplifiers.Length)
+			{
+				return NotFound();
+			}
+
 			var Zone = AmplifierService.Amplifiers[AmplifierID - 1].Zones[ZoneID - 1];
 
 			Zone.Power = PutZone.Power;
@@ -53,30 +67,20 @@ namespace AmpAPI.Controllers
 			Zone.Name = PutZone.Name;
 			Zone.Enabled = PutZone.Enabled;
 			Zone.VolumeFactor = PutZone.VolumeFactor;
+
+			return Ok();
 		}
 
-		// PUT: api/Zone/5
-		//[HttpPut("{ZoneID:int:range(1,6)}/volume/{value:int:range(0,38)}")]
-		//public void Put([FromRoute]int AmplifierID, int ZoneID, int value)
-		//{
-		//}
+		[HttpDelete("{ZoneID:int:range(1,6)}")]
+		public IActionResult Delete([FromRoute] int AmplifierID, int ZoneID)
+		{
+			if (AmplifierID > AmplifierService.Amplifiers.Length)
+			{
+				return NotFound();
+			}
 
-		// PUT: api/Zone/5
-		//[HttpPut("{ZoneID:int:range(1,6)}/volume")]
-		//public void Put([FromRoute]int AmplifierID, int ZoneID, [FromBody]int Volume)
-		//{
-		//}
-
-		// No POST/DELETE as zones are never created/deleted
-		// POST: api/Zone
-		//[HttpPost]
-		//public void Post([FromBody] string value)
-		//{
-		//}
-		// DELETE: api/ApiWithActions/5
-		//[HttpDelete("{id}")]
-		//      public void Delete(int id)
-		//      {
-		//      }
+			AmplifierService.Amplifiers[AmplifierID - 1].Zones[ZoneID - 1].Enabled = false;
+			return Ok();
+		}
 	}
 }

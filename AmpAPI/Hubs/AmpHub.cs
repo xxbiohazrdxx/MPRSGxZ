@@ -2,13 +2,13 @@
 using System.Threading.Tasks;
 using AmpAPI.Models;
 
-namespace AmpApi.Hubs
+namespace AmpAPI.Hubs
 {
-    public class AmpHub : Hub
-    {
-        public async Task SendZoneUpdate(ZoneModel Zone)
-        {
-            await Clients.All.SendAsync("ReceiveZoneUpdate", Zone);
-        }
-    }
+	public class AmpHub : Hub
+	{
+		public async Task SendZoneUpdate(ZoneModel Zone)
+		{
+			await Clients.All.SendAsync("ReceiveZoneUpdate", Zone);
+		}
+	}
 }

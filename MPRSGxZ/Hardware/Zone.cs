@@ -229,11 +229,8 @@ namespace MPRSGxZ.Hardware
 		private event QueueCommandEvent QueueCommand;
 		private event ZoneChangedEvent ZoneChanged;
 
-		/// <summary>
-		/// Default constructor for missing configuration
-		/// </summary>
-		/// <param name="AmpID">The ID of the amplifier this zone is a member of</param>
-		/// <param name="AmpZoneID">The ID of this zone internal to the owning amplifier</param>
+		internal Zone() { }
+
 		internal Zone(int AmpID, int ZoneID, QueueCommandEvent QueueCommand, ZoneChangedEvent ZoneChanged)
 		{
 			this.AmpID = AmpID;
