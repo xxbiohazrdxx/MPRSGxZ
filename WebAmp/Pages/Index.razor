@@ -138,7 +138,7 @@
 	{
 		var EnabledZones = AmplifierService.Amplifiers.SelectMany(x => x.Zones).Where(x => x.Enabled).ToList();
 
-		if (EnabledZones.Contains(CurrentZone))
+		if (!EnabledZones.Contains(CurrentZone))
 		{
 			CurrentZone = EnabledZones[0];
 			return;
