@@ -10,6 +10,7 @@ namespace MPRSGxZ.Ports
 	{
 		private TcpClient Client;
 		private IPEndPoint ServerEndpoint;
+
 		private NetworkStream Stream;
 		private StreamWriter Writer;
 		private StreamReader Reader;
@@ -19,6 +20,12 @@ namespace MPRSGxZ.Ports
 		{
 			Client = new TcpClient();
 			this.ServerEndpoint = ServerEndpoint;
+		}
+
+		internal IPAmplifierPort(string HostName, int Port)
+		{
+			Client = new TcpClient();
+			this.ServerEndpoint = new IPEndPoint(Dns.GetHostAddresses(HostName)[0], Port);
 		}
 
 		public void Open()

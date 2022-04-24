@@ -36,7 +36,6 @@ namespace MPRSGxZ.Hardware
 			{
 				if (_Power != value)
 				{
-					_Power = value;
 					QueueCommand?.Invoke(new QueueCommandEventArgs(new Command(BaseCommand.Power, AmpID, ZoneID, value ? 1 : 0)));
 				}
 			}
@@ -53,7 +52,6 @@ namespace MPRSGxZ.Hardware
 			{
 				if (_Mute != value)
 				{
-					_Mute = value;
 					QueueCommand?.Invoke(new QueueCommandEventArgs(new Command(BaseCommand.Mute, AmpID, ZoneID, value ? 1 : 0)));
 				}
 			}
@@ -70,7 +68,6 @@ namespace MPRSGxZ.Hardware
 			{
 				if (_PublicAddress != value)
 				{
-					_PublicAddress = value;
 					QueueCommand?.Invoke(new QueueCommandEventArgs(new Command(BaseCommand.PublicAddress, AmpID, ZoneID, value ? 1 : 0)));
 				}
 			}
@@ -87,7 +84,6 @@ namespace MPRSGxZ.Hardware
 			{
 				if (_DoNotDisturb != value)
 				{
-					_DoNotDisturb = value;
 					QueueCommand?.Invoke(new QueueCommandEventArgs(new Command(BaseCommand.DoNotDisturb, AmpID, ZoneID, value ? 1 : 0)));
 				}
 			}
@@ -113,7 +109,6 @@ namespace MPRSGxZ.Hardware
 						value = Command.Volume.MinValue;
 					}
 
-					_Volume = value;
 					QueueCommand?.Invoke(new QueueCommandEventArgs(new Command(BaseCommand.Volume, AmpID, ZoneID, value)));
 				}
 			}
@@ -139,7 +134,6 @@ namespace MPRSGxZ.Hardware
 						value = Command.Treble.MinValue;
 					}
 
-					_Treble = value;
 					QueueCommand?.Invoke(new QueueCommandEventArgs(new Command(BaseCommand.Treble, AmpID, ZoneID, value)));
 				}
 			}
@@ -165,7 +159,6 @@ namespace MPRSGxZ.Hardware
 						value = Command.Bass.MinValue;
 					}
 
-					_Bass = value;
 					QueueCommand?.Invoke(new QueueCommandEventArgs(new Command(BaseCommand.Treble, AmpID, ZoneID, value)));
 				}
 			}
@@ -189,7 +182,6 @@ namespace MPRSGxZ.Hardware
 					value = Command.Balance.MinValue;
 				}
 
-				_Balance = value;
 				QueueCommand?.Invoke(new QueueCommandEventArgs(new Command(BaseCommand.Bass, AmpID, ZoneID, value)));
 			}
 		}
@@ -212,7 +204,6 @@ namespace MPRSGxZ.Hardware
 					value = Command.Source.MinValue;
 				}
 
-				_Source = value;
 				QueueCommand?.Invoke(new QueueCommandEventArgs(new Command(BaseCommand.Source, AmpID, ZoneID, value)));
 			}
 		}
@@ -227,18 +218,18 @@ namespace MPRSGxZ.Hardware
 		private decimal m_VolumeFactor;
 
 		private event QueueCommandEvent QueueCommand;
-		private event ZoneChangedEvent ZoneChanged;
+		private event ZoneChangedEventHandler ZoneChangedEvent;
 
 		internal Zone() { }
 
-		internal Zone(int AmpID, int ZoneID, QueueCommandEvent QueueCommand, ZoneChangedEvent ZoneChanged)
+		internal Zone(int AmpID, int ZoneID, QueueCommandEvent QueueCommand, ZoneChangedEventHandler ZoneChangedEvent, string Name = null, bool Enabled = true)
 		{
 			this.AmpID = AmpID;
 			this.ZoneID = ZoneID;
-			this.Enabled = true;
-			this.Name = $"Amp {AmpID} Zone {ZoneID}";
+			this.Name = Name ?? $"Amp {AmpID} Zone {ZoneID}";
+			this.Enabled = Enabled;
 			this.QueueCommand = QueueCommand;
-			this.ZoneChanged = ZoneChanged;
+			this.ZoneChangedEvent += ZoneChangedEvent;
 
 			m_VolumeFactor = 1;
 			m_LinkStatus = ZoneLinkMode.Unlinked;
@@ -250,10 +241,10 @@ namespace MPRSGxZ.Hardware
 		/// </summary>
 		/// <param name="SettingChanged">The handler for when Zone software settings are changed</param>
 		/// <param name="QueueCommand">The handler to queue a command with the AmplifierPort when Zone hardware settings are changed</param>
-		internal void AttachEvents(QueueCommandEvent QueueCommand, ZoneChangedEvent ZoneChanged)
+		internal void AttachEvents(QueueCommandEvent QueueCommand, ZoneChangedEventHandler InternalZoneChangedEvent)
 		{
 			this.QueueCommand = QueueCommand;
-			this.ZoneChanged = ZoneChanged;
+			this.ZoneChangedEvent = InternalZoneChangedEvent;
 		}
 
 		/// <summary>
@@ -355,7 +346,7 @@ namespace MPRSGxZ.Hardware
 			
 			if(ValueChanged)
 			{
-				ZoneChanged?.Invoke(new ZoneChangedEventArgs(AmpID, ZoneID));
+				ZoneChangedEvent?.Invoke(new ZoneChangedEventArgs(AmpID, ZoneID));
 			}
 		}
 	}

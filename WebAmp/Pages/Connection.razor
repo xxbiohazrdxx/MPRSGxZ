@@ -1,0 +1,44 @@
+﻿@page "/connection"
+
+<PageTitle>Connection Settings</PageTitle>
+
+@using WebAmp.Services
+@using WebAmp.Settings
+@using Microsoft.Extensions.Options
+
+@inject IAmplifierService AmplifierService
+@inject IOptionsMonitor<AmplifierStackSettings> Settings
+
+<h2>Connection Settings</h2>
+
+<EditForm Model="@ConnectionSettings">
+	<p>
+		<label>Port Type</label>
+		<InputSelect @bind-Value="@ConnectionSettings.PortType">
+			@foreach (var value in Enum.GetValues(typeof(ConnectionType)))
+			{
+				<option>@value</option>
+			}
+		</InputSelect>
+	</p>
+	<p>
+		<label>Port</label>
+		<InputText @bind-Value="@ConnectionSettings.PortAddress" />
+	</p>
+	<p>
+		<label>Amplifier Count</label>
+		<InputNumber @bind-Value="@ConnectionSettings.AmplifierCount" />
+	</p>
+</EditForm>
+
+@code
+{
+	private AmplifierStackSettings AmplifierSettings { get; set; }
+	private ConnectionSettings ConnectionSettings { get; set; }
+
+	protected override void OnInitialized()
+	{
+		AmplifierSettings = Settings.CurrentValue;
+		ConnectionSettings = AmplifierSettings.Connection;
+	}
+}

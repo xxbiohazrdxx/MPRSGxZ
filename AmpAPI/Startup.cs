@@ -1,5 +1,6 @@
 ﻿using AmpAPI.Services;
 using AmpAPI.Settings;
+using AmpAPI.Hubs;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -24,10 +25,9 @@ namespace AmpAPI
 		{
 			services.Configure<AmplifierStackSettings>(Configuration.GetSection("AmplifierStackSettings"));
 			services.AddSingleton<IAmplifierService, AmplifierService>();
-			//services.AddSingleton<IConfiguration>(Configuration);
 			services.AddRazorPages();
-			//services.AddRouting();
-			//services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+			services.AddServerSideBlazor();
+			services.AddSignalR();
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -44,11 +44,13 @@ namespace AmpAPI
 
 			app.UseHttpsRedirection();
 			app.UseRouting();
-			//app.UseAuthorization();
+
 			app.UseEndpoints(endpoints =>
 			{
 				endpoints.MapRazorPages();
 				endpoints.MapControllers();
+				endpoints.MapHub<AmpHub>("/ampHub");
+				//endpoints.MapFallbackToPage("/Pages/Index");
 			});
 		}
 	}

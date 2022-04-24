@@ -18,7 +18,9 @@ namespace MPRSGxZ
 		private Timer PollTimer;
 
 		private QueueCommandEvent QueueCommand;
-		public	ZoneChangedEvent ZoneChanged;
+		public	ZoneChangedEventHandler ZoneChangedEvent;
+		private ZoneChangedEventHandler InternalZoneChangedEvent;
+		public  SourceChangedEvent SourceChanged;
 
 		public AmplifierStack(string PortName, int PollFrequency = 250, int AmplifierCount = 1)
 		{
@@ -46,6 +48,13 @@ namespace MPRSGxZ
 			ConstructorHelper(PollFrequency, AmplifierCount);
 		}
 
+		public AmplifierStack(string ServerHostName, int ServerPort, int PollFrequency = 250, int AmplifierCount =1)
+		{
+			this.Port = new IPAmplifierPort(ServerHostName, ServerPort);
+
+			ConstructorHelper(PollFrequency, AmplifierCount);
+		}
+
 		private void ConstructorHelper(int PollFrequency, int AmplifierCount)
 		{
 			this.AmplifierCount = AmplifierCount;
@@ -54,6 +63,7 @@ namespace MPRSGxZ
 			PollTimer.Elapsed += PollAmplifiers;
 
 			QueueCommand += QueueAmplifierCommand;
+			InternalZoneChangedEvent += ZoneChanged;
 
 			//
 			// All models have 6 sources, and when stacked the sources of the first amp are shared with
@@ -63,14 +73,14 @@ namespace MPRSGxZ
 
 			for (int i = 0; i < 6; i++)
 			{
-				Sources[i] = new Source(i + 1);
+				Sources[i] = new Source(i + 1, SourceChanged);
 			}
 
 			Amplifiers = new Amplifier[AmplifierCount];
 
 			for (int i = 0; i < AmplifierCount; i++)
 			{
-				Amplifiers[i] = new Amplifier(i + 1, QueueCommand, ZoneChanged);
+				Amplifiers[i] = new Amplifier(i + 1, QueueCommand, InternalZoneChangedEvent);
 			}
 		}
 
@@ -126,6 +136,11 @@ namespace MPRSGxZ
 			{
 				var CommandResults = Port.ExecuteCommand(e.Command);
 			}
+		}
+
+		private void ZoneChanged(ZoneChangedEventArgs e)
+		{
+			ZoneChangedEvent?.Invoke(e);
 		}
 
 		/*public void LinkZone(int PrimaryZoneID, int SecondaryZoneID)

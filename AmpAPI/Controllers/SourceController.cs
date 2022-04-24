@@ -15,9 +15,9 @@ namespace AmpAPI.Controllers
 		private AmplifierStackSettings Settings;
 		private IAmplifierService AmplifierService;
 
-		public SourceController(IOptions<AmplifierStackSettings> Settings, IAmplifierService AmplifierService)
+		public SourceController(IOptionsMonitor<AmplifierStackSettings> Settings, IAmplifierService AmplifierService)
 		{
-			this.Settings = Settings.Value;
+			this.Settings = Settings.CurrentValue;
 			this.AmplifierService = AmplifierService;
 		}
 

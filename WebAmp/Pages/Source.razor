@@ -1,0 +1,39 @@
+﻿@page "/source"
+
+<PageTitle>Sources</PageTitle>
+
+@using WebAmp.Services
+@using WebAmp.Settings
+@using Microsoft.Extensions.Options
+
+@inject IAmplifierService AmplifierService
+@inject IOptionsMonitor<AmplifierStackSettings> Settings
+
+<h1>Input sources</h1>
+
+<EditForm Model="@AmplifierService">
+	<table class="table">
+		<thead>
+			<tr>
+				<th>Input</th>
+				<th>Active</th>
+				<th>Name</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var Current in AmplifierService.Sources)
+			{
+				<tr>
+					<td><label>@Current.ID</label></td>
+					<td>
+						<label class="switch">
+						  <InputCheckbox @bind-Value="@Current.Enabled" />
+						  <span class="slider round"></span>
+						</label>
+					</td>
+					<td><InputText @bind-Value="@Current.Name" /></td>
+				</tr>
+			}
+		</tbody>
+	</table>
+</EditForm>

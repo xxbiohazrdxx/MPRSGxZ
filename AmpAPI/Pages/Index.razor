@@ -1,0 +1,51 @@
+﻿@page "/"
+@namespace AmpAPI.Pages
+@using Microsoft.AspNetCore.SignalR.Client
+@using AmpAPI.Models
+@inject NavigationManager NavigationManager
+@implements IAsyncDisposable
+
+<ul>
+    <li>Amp ID - @CurrentZone.AmpID</li>
+    <li>Zone ID - @CurrentZone.ZoneID</li>
+    <li>Source - @CurrentZone.Source</li>
+    <li>Volume - @CurrentZone.Volume</li>
+</ul>
+
+@code {
+    private HubConnection? hubConnection;
+    private ZoneModel CurrentZone;
+
+    protected override async Task OnInitializedAsync()
+    {
+        hubConnection = new HubConnectionBuilder()
+            .WithUrl(NavigationManager.ToAbsoluteUri("/amphub"))
+            .Build();
+
+        hubConnection.On<ZoneModel>("ReceiveZoneUpdate", (Zone) =>
+        {
+            CurrentZone = Zone;
+            StateHasChanged();
+        });
+
+        await hubConnection.StartAsync();
+    }
+
+    private async Task Send()
+    {
+        if (hubConnection is not null)
+        {
+            await hubConnection.SendAsync("SendZoneChange", CurrentZone);
+        }
+    }
+
+    public bool IsConnected => hubConnection?.State == HubConnectionState.Connected;
+
+    public async ValueTask DisposeAsync()
+    {
+        if (hubConnection is not null)
+        {
+            await hubConnection.DisposeAsync();
+        }
+    }
+}

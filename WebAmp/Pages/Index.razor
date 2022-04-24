@@ -1,0 +1,166 @@
+﻿@page "/"
+
+<PageTitle>WebAmp</PageTitle>
+
+@using WebAmp.Services
+@using WebAmp.Settings
+@using MPRSGxZ.Hardware
+@using Microsoft.Extensions.Options
+@using System.Linq;
+@using Microsoft.AspNetCore.SignalR.Client;
+
+@inject IAmplifierService AmplifierService
+@inject NavigationManager NavigationManager
+
+<EditForm Model="@CurrentZone">
+	<div style="text-align:center;background-color: #f7f7f7;border-bottom: 1px solid #d6d5d5;display: flex;flex-wrap: inherit;align-items: center;justify-content: space-between;">
+		<button @onclick="PreviousZone" style="display:inline-block;border: none;position: relative; background:none;z-index: 1;padding: 1em;margin: -1em; "><span class="oi oi-caret-left" /></button>
+		<h1  style="display:inline-block;">@CurrentZone.Name</h1>
+		<button @onclick="NextZone"  style="display:inline-block;border: none;position: relative; background:none;z-index: 1;padding: 1em;margin: -1em;"><span class="oi oi-caret-right" /></button>
+	</div>
+	
+	<div style="font-size: 14px;
+    text-transform: uppercase;
+    line-height: 1;
+    color: #6d6d72;
+    margin: 35px 15px 10px;">Control</div>
+	<div style="background-color: #f7f7f7;border: 1px solid #d6d5d5;border-radius:0.5em">
+		<ul style="list-style-type:none;padding:0;margin:0;">
+			<li style="padding: 8px 15px 7px 15px;position: relative;width: 100%;">
+				<div style="display: flex;flex-wrap: inherit;align-items: center;justify-content: space-between;">
+					<div>
+						<span class="oi oi-power-standby" aria-hidden="true" style="border-radius: 8px;box-shadow: 0px 0px 2px #888;padding: 0.5em 0.6em;margin-right:8px;"></span>
+						Power
+					</div>
+					<div>
+						<label class="switch">
+							<InputCheckbox @bind-Value="@CurrentZone.Power" />
+							<span class="slider round"></span>
+						</label>
+					</div>
+				</div>
+			</li>
+			<li style="padding: 8px 15px 7px 15px;position: relative;width: 100%;">
+				<div style="display: flex;flex-wrap: inherit;align-items: center;justify-content: space-between;">
+					<div>
+						<span class="oi oi-volume-off" aria-hidden="true" style="border-radius: 8px;box-shadow: 0px 0px 2px #888;padding: 0.5em 0.6em;margin-right:8px;width: 35.2px;text-align:center;"></span>
+						Mute
+					</div>
+					<div>
+						<label class="switch">
+							<InputCheckbox disabled="@(!CurrentZone.Power)" @bind-Value="@CurrentZone.Mute" />
+							<span class="slider round"></span>
+						</label>
+					</div>
+				</div>
+			</li>
+			<li style="padding: 8px 15px 7px 15px;;position: relative;width: 100%;">
+				<div style="display: flex;flex-wrap: inherit;align-items: center;justify-content: space-between;">
+					<div>
+						<span class="oi oi-audio" aria-hidden="true" style="border-radius: 8px;box-shadow: 0px 0px 2px #888;padding: 0.5em 0.6em;margin-right:8px;"></span>
+						Source
+					</div>
+					<div>
+						<InputSelect disabled="@(!CurrentZone.Power)" @bind-Value="@CurrentZone.Source" style="color:#fff;height:34px;border-radius:4px;display:inline-block;background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);">
+							@foreach (var Current in AmplifierService.Sources.Where(x => x.Enabled))
+							{
+								<option value=@Current.ID>@Current.Name</option>
+							}
+						</InputSelect>
+					</div>
+				</div>
+			</li>
+		</ul>
+	</div>
+
+	<div style="font-size: 14px;
+    text-transform: uppercase;
+    line-height: 1;
+    color: #6d6d72;
+    margin: 35px 15px 10px;">Volume</div>
+	<div style="text-align:center;background-color: #f7f7f7;border: 1px solid #d6d5d5;border-radius:0.5em;">
+		<div style="margin-top:8px;">
+			<input type="range" min="0" max="38" step="1" @bind="@CurrentZone.Volume" disabled="@(!CurrentZone.Power)" style="width:95%;">
+		</div>
+		<div style="text-align:center;background-color: #f7f7f7;border-bottom: 1px solid #d6d5d5;display: flex;flex-wrap: inherit;align-items: center;justify-content: space-between;">	
+			<button @onclick="VolumeDown" disabled="@(!CurrentZone.Power)" style="border-radius: 8px;box-shadow: 0px 0px 2px #888;padding: 0.5em 0.6em;display:inline-block;border: none;position: relative; background:none;z-index: 1;padding: 1em;margin: -1em;"><span class="oi oi-volume-low" /></button>
+			<h3 style="display:inline-block;">@CurrentZone.Volume</h3>
+			<button @onclick="VolumeUp" disabled="@(!CurrentZone.Power)" style="border-radius: 8px;box-shadow: 0px 0px 2px #888;padding: 0.5em 0.6em;display:inline-block;border: none;position: relative; background:none;z-index: 1;padding: 1em;margin: -1em;"><span class="oi oi-volume-high" /></button>
+		</div>
+	</div>
+</EditForm>
+
+@code
+{
+	private HubConnection? AmpHubConnection;
+	public MPRSGxZ.Hardware.Zone CurrentZone { get; set; }
+
+	protected override async Task OnInitializedAsync()
+	{
+		var EnabledZones = AmplifierService.Amplifiers.SelectMany(x => x.Zones).Where(x => x.Enabled).ToList();
+		CurrentZone = EnabledZones[0];
+
+		AmpHubConnection = new HubConnectionBuilder()
+								.WithUrl(NavigationManager.ToAbsoluteUri("/amphub"))
+								.WithAutomaticReconnect()
+								.Build();
+
+		AmpHubConnection.On("SendUpdate", () => { Changed(); });
+		await AmpHubConnection.StartAsync();
+	}
+
+	public void Changed()
+	{
+		StateHasChanged();
+	}
+
+	public void PreviousZone()
+	{
+		var EnabledZones = AmplifierService.Amplifiers.SelectMany(x => x.Zones).Where(x => x.Enabled).ToList();
+
+		if (!EnabledZones.Contains(CurrentZone))
+		{
+			CurrentZone = EnabledZones[0];
+			return;
+		}
+
+		if (CurrentZone == EnabledZones.First())
+		{
+			CurrentZone = EnabledZones.Last();
+			return;
+		}
+
+		var CurrentIndex = EnabledZones.IndexOf(CurrentZone);
+		CurrentZone = EnabledZones[CurrentIndex - 1];
+	}
+
+	public void NextZone()
+	{
+		var EnabledZones = AmplifierService.Amplifiers.SelectMany(x => x.Zones).Where(x => x.Enabled).ToList();
+
+		if (EnabledZones.Contains(CurrentZone))
+		{
+			CurrentZone = EnabledZones[0];
+			return;
+		}
+
+		if (CurrentZone == EnabledZones.Last())
+		{
+			CurrentZone = EnabledZones.First();
+			return;
+		}
+
+		var CurrentIndex = EnabledZones.IndexOf(CurrentZone);
+		CurrentZone = EnabledZones[CurrentIndex + 1];
+	}
+
+	public void VolumeDown()
+	{
+		CurrentZone.Volume--;
+	}
+
+	public void VolumeUp()
+	{
+		CurrentZone.Volume++;
+	}
+}

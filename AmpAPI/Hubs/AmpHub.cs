@@ -6,9 +6,6 @@ namespace AmpAPI.Hubs
 {
 	public class AmpHub : Hub
 	{
-		public async Task SendZoneUpdate(ZoneModel Zone)
-		{
-			await Clients.All.SendAsync("ReceiveZoneUpdate", Zone);
-		}
+		public async Task SendZoneUpdate(ZoneModel Zone) => await Clients.All.SendAsync("ReceiveZoneUpdate", Zone);
 	}
 }

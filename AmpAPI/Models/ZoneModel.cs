@@ -2,21 +2,21 @@
 {
 	public class ZoneModel
 	{
-		public int AmpID { get; private set; }
-		public int ZoneID { get; private set; }
-		public bool Power { get; private set; }
-		public bool Mute { get; private set; }
-		public bool PublicAddress { get; private set; }
-		public bool DoNotDisturb { get; private set; }
-		public int Volume { get; private set; }
-		public int Treble { get; private set; }
-		public int Bass { get; private set; }
-		public int Balance { get; private set; }
-		public int Source { get; private set; }
-		public string Name { get; private set; }
-		public bool Enabled { get; private set; }
-		public decimal VolumeFactor { get; private set; }
-		public int AdjustedVolume { get; private set; }
+		public int AmpID { get; set; }
+		public int ZoneID { get; set; }
+		public bool Power { get; set; }
+		public bool Mute { get; set; }
+		public bool PublicAddress { get; set; }
+		public bool DoNotDisturb { get; set; }
+		public int Volume { get; set; }
+		public int Treble { get; set; }
+		public int Bass { get; set; }
+		public int Balance { get; set; }
+		public int Source { get; set; }
+		public string Name { get; set; }
+		public bool Enabled { get; set; }
+		public decimal VolumeFactor { get; set; }
+		public int AdjustedVolume { get; set; }
 
 		internal ZoneModel() { }
 

@@ -1,21 +1,25 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-	<TargetFramework>netcoreapp3.1</TargetFramework>
-	<LangVersion>8.0</LangVersion>
+	<TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-	<Folder Include="wwwroot\" />
-  </ItemGroup>
-
-  <ItemGroup>
 	<PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.1.0" />
-	<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.1" />
+	<PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="6.0.3" />
+	<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.2" />
   </ItemGroup>
 
   <ItemGroup>
 	<ProjectReference Include="..\MPRSGxZ\MPRSGxZ.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Pages\Index.razor" />
   </ItemGroup>
 
 </Project>

@@ -14,9 +14,9 @@ namespace AmpAPI.Controllers
 		private AmplifierStackSettings Settings;
 		private IAmplifierService AmplifierService;
 
-		public ZoneController(IOptions<AmplifierStackSettings> Settings, IAmplifierService AmplifierService)
+		public ZoneController(IOptionsMonitor<AmplifierStackSettings> Settings, IAmplifierService AmplifierService)
 		{
-			this.Settings = Settings.Value;
+			this.Settings = Settings.CurrentValue;
 			this.AmplifierService = AmplifierService;
 		}
 
@@ -46,7 +46,7 @@ namespace AmpAPI.Controllers
 
 		// PUT: api/Zone/5
 		[HttpPut("{ZoneID:int:range(1,6)}")]
-		public IActionResult Put([FromRoute]int AmplifierID, int ZoneID, ZoneModel PutZone)
+		public IActionResult Put([FromRoute]int AmplifierID, int ZoneID, [FromBody] ZoneModel PutZone)
 		{
 			if (AmplifierID > AmplifierService.Amplifiers.Length)
 			{

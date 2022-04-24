@@ -1,15 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31911.196
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32328.378
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AmpAPI", "AmpAPI\AmpAPI.csproj", "{C4CED37A-2F98-4D4E-B6C6-CC450A4EFCB8}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MPRSGxZ", "MPRSGxZ\MPRSGxZ.csproj", "{D8AB6DC2-850D-4636-A1EE-30FAEDF6A2AF}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AmpMonitor", "AmpMonitor\AmpMonitor.csproj", "{018A7715-D1A8-47A7-8C25-CAE28B463B4E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmpTest", "AmpTest\AmpTest.csproj", "{B3A0BDAB-4C79-46A4-AFCE-F19841BA9DD1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AmpTest", "AmpTest\AmpTest.csproj", "{B3A0BDAB-4C79-46A4-AFCE-F19841BA9DD1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebAmp", "WebAmp\WebAmp.csproj", "{6C9F0355-0E6D-428B-AF65-5EE6806F9AA5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{C4CED37A-2F98-4D4E-B6C6-CC450A4EFCB8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C4CED37A-2F98-4D4E-B6C6-CC450A4EFCB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C4CED37A-2F98-4D4E-B6C6-CC450A4EFCB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C4CED37A-2F98-4D4E-B6C6-CC450A4EFCB8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D8AB6DC2-850D-4636-A1EE-30FAEDF6A2AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D8AB6DC2-850D-4636-A1EE-30FAEDF6A2AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D8AB6DC2-850D-4636-A1EE-30FAEDF6A2AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -33,6 +29,10 @@ Global
 		{B3A0BDAB-4C79-46A4-AFCE-F19841BA9DD1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B3A0BDAB-4C79-46A4-AFCE-F19841BA9DD1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B3A0BDAB-4C79-46A4-AFCE-F19841BA9DD1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6C9F0355-0E6D-428B-AF65-5EE6806F9AA5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C9F0355-0E6D-428B-AF65-5EE6806F9AA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C9F0355-0E6D-428B-AF65-5EE6806F9AA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C9F0355-0E6D-428B-AF65-5EE6806F9AA5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

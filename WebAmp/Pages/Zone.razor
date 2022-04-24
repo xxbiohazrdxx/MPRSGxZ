@@ -1,0 +1,43 @@
+﻿@page "/zone"
+
+<PageTitle>Zones</PageTitle>
+
+@using WebAmp.Services
+@using WebAmp.Settings
+@using Microsoft.Extensions.Options
+
+@inject IAmplifierService AmplifierService
+
+<h1>Output zones</h1>
+
+<EditForm Model="@AmplifierService">
+	<table class="table">
+		<thead>
+			<tr>
+				<th>Amp</th>
+				<th>Zone</th>
+				<th>Active</th>
+				<th>Name</th>
+			</tr>
+		</thead>
+		<tbody>
+				@foreach (var CurrentAmplifier in AmplifierService.Amplifiers)
+				{
+					@foreach (var CurrentZone in CurrentAmplifier.Zones)
+					{
+						<tr>
+							<td><label>@CurrentAmplifier.ID</label></td>
+							<td><label>@CurrentZone.ZoneID</label></td>
+							<td>
+								<label class="switch">
+									<InputCheckbox @bind-Value="@CurrentZone.Enabled" />
+									<span class="slider round"></span>
+								</label>
+							</td>
+							<td><InputText @bind-Value="@CurrentZone.Name" /></td>
+						</tr>
+					}
+				}
+		</tbody>
+	</table>
+</EditForm>

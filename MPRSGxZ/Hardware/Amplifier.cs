@@ -26,7 +26,7 @@ namespace MPRSGxZ.Hardware
 		
 		internal Amplifier() { }
 
-		internal Amplifier(int AmpID, QueueCommandEvent QueueCommand, ZoneChangedEvent ZoneChanged, int ZoneCount = 6)
+		internal Amplifier(int AmpID, QueueCommandEvent QueueCommand, ZoneChangedEventHandler InternalZoneChangedEvent, int ZoneCount = 6)
 		{
 			this.ID = AmpID;
 			this.Enabled = true;
@@ -35,7 +35,7 @@ namespace MPRSGxZ.Hardware
 			Zones = new Zone[ZoneCount];
 			for(int i = 0; i < ZoneCount; i++)
 			{
-				Zones[i] = new Zone(ID, i + 1, QueueCommand, ZoneChanged);
+				Zones[i] = new Zone(ID, i + 1, QueueCommand, InternalZoneChangedEvent);
 			}
 		}
 	}
