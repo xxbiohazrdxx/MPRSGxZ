@@ -4,6 +4,7 @@ namespace MPRSGxZ.Hardware
 {
 	public class Source
 	{
+		#region Software properties
 		public int ID { get; internal set; }
 		private string _Name;
 		public string Name
@@ -17,7 +18,7 @@ namespace MPRSGxZ.Hardware
 				if (_Name != value)
 				{
 					_Name = value;
-					SourceChanged?.Invoke(new SourceChangedEventArgs(ID));
+					SourceChangedEvent?.Invoke(new SourceChangedEventArgs(ID));
 				}
 			}
 		}
@@ -34,26 +35,22 @@ namespace MPRSGxZ.Hardware
 				if (_Enabled != value)
 				{
 					_Enabled = value;
-					SourceChanged?.Invoke(new SourceChangedEventArgs(ID));
+					SourceChangedEvent?.Invoke(new SourceChangedEventArgs(ID));
 				}
 			}
 		}
+		#endregion
 
-		private event SourceChangedEvent SourceChanged;
+		private event SourceChangedEventHandler SourceChangedEvent;
 
 		internal Source() { }
 
-		internal Source(int ID, SourceChangedEvent SourceChanged, string Name = null, bool Enabled = true) 
+		internal Source(int ID, SourceChangedEventHandler SourceChangedEvent, string Name = null, bool Enabled = true) 
 		{
 			this.ID = ID;
 			this.Name = Name ?? $"Source {ID}";
 			this.Enabled = Enabled;
-			this.SourceChanged = SourceChanged;
-		}
-
-		internal void AttachEvents(SourceChangedEvent SourceChanged)
-		{
-			this.SourceChanged = SourceChanged;
+			this.SourceChangedEvent += SourceChangedEvent;
 		}
 	}
 }

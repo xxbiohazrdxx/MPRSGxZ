@@ -72,7 +72,7 @@ namespace WebAmp.Services
 			}
 
 			AmplifierMiddleware.ZoneChangedEvent += new MPRSGxZ.Events.ZoneChangedEventHandler(x => Hub.Clients.All.SendUpdate());
-			AmplifierMiddleware.SourceChanged += new MPRSGxZ.Events.SourceChangedEvent(x => Hub.Clients.All.SendUpdate());
+			AmplifierMiddleware.SourceChangedEvent += new MPRSGxZ.Events.SourceChangedEventHandler(x => Hub.Clients.All.SendUpdate());
 
 			AmplifierMiddleware.Open();
 		}

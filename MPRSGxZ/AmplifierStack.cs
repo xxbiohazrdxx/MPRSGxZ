@@ -18,10 +18,20 @@ namespace MPRSGxZ
 		private Timer PollTimer;
 
 		private QueueCommandEvent QueueCommand;
+
 		public	ZoneChangedEventHandler ZoneChangedEvent;
 		private ZoneChangedEventHandler InternalZoneChangedEvent;
-		public  SourceChangedEvent SourceChanged;
 
+		public  SourceChangedEventHandler SourceChangedEvent;
+		private SourceChangedEventHandler InternalSourceChangedEvent;
+
+		#region Constructors
+		/// <summary>
+		/// Constructor for an amplifier connected via serial port
+		/// </summary>
+		/// <param name="PortName">The name of the serial port</param>
+		/// <param name="PollFrequency">The frequency at which the amplifier should be polled for the current state</param>
+		/// <param name="AmplifierCount">The number of amplifiers connected together</param>
 		public AmplifierStack(string PortName, int PollFrequency = 250, int AmplifierCount = 1)
 		{
 			this.Port = new SerialAmplifierPort(PortName);
@@ -30,10 +40,10 @@ namespace MPRSGxZ
 		}
 
 		/// <summary>
-		/// Creates a simulated AmplifierStack
+		/// Constructor for a simulated AmplifierStack
 		/// </summary>
-		/// <param name="PollFrequency"></param>
-		/// <param name="AmplifierCount"></param>
+		/// <param name="PollFrequency">The frequency at which the amplifier should be polled for the current state</param>
+		/// <param name="AmplifierCount">The number of amplifiers connected together</param>
 		public AmplifierStack(int PollFrequency = 250, int AmplifierCount = 1)
 		{
 			this.Port = new VirtualAmplifierPort();
@@ -41,6 +51,12 @@ namespace MPRSGxZ
 			ConstructorHelper(PollFrequency, AmplifierCount);
 		}
 
+		/// <summary>
+		/// Constructor for an amplifier connected via a serial to IP bridge
+		/// </summary>
+		/// <param name="ServerEndpoint">The IP endpoint of the serial bridge</param>
+		/// <param name="PollFrequency">The frequency at which the amplifier should be polled for the current state</param>
+		/// <param name="AmplifierCount">The number of amplifiers connected together</param>
 		public AmplifierStack(IPEndPoint ServerEndpoint, int PollFrequency = 250, int AmplifierCount = 1)
 		{
 			this.Port = new IPAmplifierPort(ServerEndpoint);
@@ -48,6 +64,13 @@ namespace MPRSGxZ
 			ConstructorHelper(PollFrequency, AmplifierCount);
 		}
 
+		/// <summary>
+		/// Constructor for an amplifier connected via a serial to IP bridge
+		/// </summary>
+		/// <param name="ServerHostName">The DNS host name of the serial bridge</param>
+		/// <param name="ServerPort">The port number that the serial bridge is configured to use</param>
+		/// <param name="PollFrequency">The frequency at which the amplifier should be polled for the current state</param>
+		/// <param name="AmplifierCount">The number of amplifiers connected together</param>
 		public AmplifierStack(string ServerHostName, int ServerPort, int PollFrequency = 250, int AmplifierCount =1)
 		{
 			this.Port = new IPAmplifierPort(ServerHostName, ServerPort);
@@ -55,6 +78,11 @@ namespace MPRSGxZ
 			ConstructorHelper(PollFrequency, AmplifierCount);
 		}
 
+		/// <summary>
+		/// Handles the common configuration between all constructors
+		/// </summary>
+		/// <param name="PollFrequency">The frequency at which the amplifier should be polled for the current state</param>
+		/// <param name="AmplifierCount">The number of amplifiers connected together</param>
 		private void ConstructorHelper(int PollFrequency, int AmplifierCount)
 		{
 			this.AmplifierCount = AmplifierCount;
@@ -64,6 +92,7 @@ namespace MPRSGxZ
 
 			QueueCommand += QueueAmplifierCommand;
 			InternalZoneChangedEvent += ZoneChanged;
+			InternalSourceChangedEvent += SourceChanged;
 
 			//
 			// All models have 6 sources, and when stacked the sources of the first amp are shared with
@@ -73,7 +102,7 @@ namespace MPRSGxZ
 
 			for (int i = 0; i < 6; i++)
 			{
-				Sources[i] = new Source(i + 1, SourceChanged);
+				Sources[i] = new Source(i + 1, InternalSourceChangedEvent);
 			}
 
 			Amplifiers = new Amplifier[AmplifierCount];
@@ -83,13 +112,20 @@ namespace MPRSGxZ
 				Amplifiers[i] = new Amplifier(i + 1, QueueCommand, InternalZoneChangedEvent);
 			}
 		}
+#endregion Constructors
 
+		/// <summary>
+		/// Opens a connection to the amplifier
+		/// </summary>
 		public void Open()
 		{
 			Port.Open();
 			PollTimer.Enabled = true;
 		}
 
+		/// <summary>
+		/// Closes a connection to the amplifier
+		/// </summary>
 		public void Close()
 		{
 			PollTimer.Enabled = false;
@@ -125,6 +161,7 @@ namespace MPRSGxZ
 			}
 		}
 
+		#region Event handlers
 		private void QueueAmplifierCommand(QueueCommandEventArgs e)
 		{
 			int AmpID = e.Command.AmpID;
@@ -142,6 +179,12 @@ namespace MPRSGxZ
 		{
 			ZoneChangedEvent?.Invoke(e);
 		}
+
+		private void SourceChanged(SourceChangedEventArgs e)
+		{
+			SourceChangedEvent?.Invoke(e);
+		}
+		#endregion
 
 		/*public void LinkZone(int PrimaryZoneID, int SecondaryZoneID)
 		{

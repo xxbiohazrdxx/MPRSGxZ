@@ -8,6 +8,7 @@ namespace MPRSGxZ.Hardware
 {
 	public class Zone
 	{
+		#region Hardware properties
 		//
 		// Amp IDs are the identifier that the firware uses for each amp (1, 2, or 3)
 		// Zone IDs are the identifier that the firmware uses for each zone (1-6)
@@ -207,7 +208,9 @@ namespace MPRSGxZ.Hardware
 				QueueCommand?.Invoke(new QueueCommandEventArgs(new Command(BaseCommand.Source, AmpID, ZoneID, value)));
 			}
 		}
+		#endregion Properties
 
+		#region Software properties
 		//
 		// Amplifier properties stored in software
 		//
@@ -216,6 +219,7 @@ namespace MPRSGxZ.Hardware
 		private ZoneLinkMode m_LinkStatus;
 		private List<int> m_LinkedZones;
 		private decimal m_VolumeFactor;
+		#endregion
 
 		private event QueueCommandEvent QueueCommand;
 		private event ZoneChangedEventHandler ZoneChangedEvent;
