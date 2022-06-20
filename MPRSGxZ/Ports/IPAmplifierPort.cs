@@ -14,7 +14,7 @@ namespace MPRSGxZ.Ports
 		private NetworkStream Stream;
 		private StreamWriter Writer;
 		private StreamReader Reader;
-		private object PortLock = new object();
+		private object PortLock = new();
 
 		internal IPAmplifierPort(IPEndPoint ServerEndpoint)
 		{
@@ -33,9 +33,11 @@ namespace MPRSGxZ.Ports
 			Client.Connect(ServerEndpoint);
 			Stream = Client.GetStream();
 
-			Writer = new StreamWriter(Stream, System.Text.Encoding.ASCII);
-			Writer.NewLine = "\r\n";
-			Writer.AutoFlush = true;
+			Writer = new StreamWriter(Stream, System.Text.Encoding.ASCII)
+			{
+				NewLine = "\r\n",
+				AutoFlush = true
+			};
 
 			Reader = new StreamReader(Stream, System.Text.Encoding.ASCII);
 

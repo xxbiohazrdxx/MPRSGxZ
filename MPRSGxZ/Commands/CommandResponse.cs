@@ -18,10 +18,10 @@
 		{
 			AmpID			= int.Parse(Response.Substring(0, 1));
 			ZoneID			= int.Parse(Response.Substring(1, 1));
-			PublicAddress	= int.Parse(Response.Substring(2, 2)) == 1 ? true : false;
-			Power			= int.Parse(Response.Substring(4, 2)) == 1 ? true : false;
-			Mute			= int.Parse(Response.Substring(6, 2)) == 1 ? true : false;
-			DoNotDisturb	= int.Parse(Response.Substring(8, 2)) == 1 ? true : false;
+			PublicAddress	= int.Parse(Response.Substring(2, 2)) == 1;
+			Power			= int.Parse(Response.Substring(4, 2)) == 1;
+			Mute			= int.Parse(Response.Substring(6, 2)) == 1;
+			DoNotDisturb = int.Parse(Response.Substring(8, 2)) == 1;
 			Volume			= int.Parse(Response.Substring(10, 2));
 			Treble			= int.Parse(Response.Substring(12, 2));
 			Bass			= int.Parse(Response.Substring(14, 2));

@@ -7,7 +7,7 @@ namespace MPRSGxZ.Ports
 	internal class SerialAmplifierPort : IPort
 	{
 		private SerialPort Port;
-		private object PortLock = new object();
+		private object PortLock = new();
 
 		internal SerialAmplifierPort(string PortName)
 		{

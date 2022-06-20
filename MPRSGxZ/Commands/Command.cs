@@ -64,9 +64,8 @@ namespace MPRSGxZ.Commands
 
 		public static implicit operator string(Command Command)
 		{
-			if (Command._BaseCommand is QueryCommand)
+			if (Command._BaseCommand is QueryCommand Query)
 			{
-				var Query = (QueryCommand)Command._BaseCommand;
 				return (string)Query;
 			}
 			else

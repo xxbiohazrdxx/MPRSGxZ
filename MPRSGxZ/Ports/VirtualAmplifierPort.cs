@@ -5,7 +5,7 @@ namespace MPRSGxZ.Ports
 {
 	internal class VirtualAmplifierPort : IPort
 	{
-		private object PortLock = new object();
+		private object PortLock = new();
 		private string[] VirtualAmplifierState;
 
 		internal VirtualAmplifierPort()

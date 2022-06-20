@@ -216,9 +216,45 @@ namespace MPRSGxZ.Hardware
 		//
 		public string Name { get; set; }
 		public bool Enabled { get; set; }
-		private ZoneLinkMode m_LinkStatus;
-		private List<int> m_LinkedZones;
-		private decimal m_VolumeFactor;
+
+		// Linked zone properties
+		private ZoneLinkMode LinkStatus;
+		private List<int> LinkedZones;
+
+		/// <summary>
+		/// A value which is multiplied with the volume set for this zone to produce the adjusted volume. Values less than 0 will be set to 0.1 and greater than 3 will be set to 3
+		/// </summary>
+		private decimal _VolumeFactor;
+		public decimal VolumeFactor
+		{
+			get
+			{
+				return _VolumeFactor;
+			}
+			set
+			{
+				if (_VolumeFactor != value)
+				{
+					//
+					// Volume factor can't be negative or zero (as this zone would never turn on).
+					// Technically we could have the volume factor go as high as Command.Volume.MaxValue,
+					// a set volume of 0 would result in an adjusted volume of 0 and a set volume of anything
+					// else would result in the adjusted volume being maxed.
+					//
+					// The maximum value of 5 an artificial limitation for the sake of sanity 
+					//
+					if (value <= 0 || value > 5)
+					{
+						throw new ArgumentOutOfRangeException();
+					}
+					else
+					{
+						_VolumeFactor = value;
+						//SettingChangedEvent?.Invoke();
+					}
+				}
+			}
+		}
 		#endregion
 
 		private event QueueCommandEvent QueueCommand;
@@ -235,9 +271,9 @@ namespace MPRSGxZ.Hardware
 			this.QueueCommand = QueueCommand;
 			this.ZoneChangedEvent += ZoneChangedEvent;
 
-			m_VolumeFactor = 1;
-			m_LinkStatus = ZoneLinkMode.Unlinked;
-			m_LinkedZones = new List<int>();
+			VolumeFactor = 1;
+			LinkStatus = ZoneLinkMode.Unlinked;
+			LinkedZones = new List<int>();
 		}
 
 		/// <summary>
@@ -249,40 +285,6 @@ namespace MPRSGxZ.Hardware
 		{
 			this.QueueCommand = QueueCommand;
 			this.ZoneChangedEvent = InternalZoneChangedEvent;
-		}
-
-		/// <summary>
-		/// A value which is multiplied with the volume set for this zone to produce the adjusted volume. Values less than 0 will be set to 0.1 and greater than 3 will be set to 3
-		/// </summary>
-		public decimal VolumeFactor
-		{
-			get
-			{
-				return m_VolumeFactor;
-			}
-			set
-			{
-				if(m_VolumeFactor != value)
-				{
-					//
-					// Volume factor can't be negative or zero (as this zone would never turn on).
-					// Technically we could have the volume factor go as high as Command.Volume.MaxValue,
-					// a set volume of 0 would result in an adjusted volume of 0 and a set volume of anything
-					// else would result in the adjusted volume being maxed.
-					//
-					// The maximum value of 5 an artificial limitation for the sake of sanity 
-					//
-					if (value <= 0 || value > 5)
-					{
-						throw new ArgumentOutOfRangeException();
-					}
-					else
-					{
-						m_VolumeFactor = value;
-						//SettingChangedEvent?.Invoke();
-					}
-				}
-			}
 		}
 
 		/// <summary>
