@@ -17,7 +17,7 @@ namespace AmplifierTests
 			var TestAmplifierSolution = new AmplifierStack(@"COM3");
 			TestAmplifierSolution.Open();
 
-			TestAmplifierSolution.ZoneChanged += ZoneChanged;
+			TestAmplifierSolution.ZoneChangedEvent += ZoneChanged;
 
 			System.Threading.Thread.Sleep(5000);
 

@@ -12,7 +12,7 @@ namespace AmpMonitor
 		{
 			//AmpInterface = new AmplifierStack(@"COM3");
 			AmpInterface = new AmplifierStack();
-			AmpInterface.ZoneChanged += ZoneChanged;
+			AmpInterface.ZoneChangedEvent += ZoneChanged;
 			AmpInterface.Open();
 
 			Console.CursorVisible = false;
