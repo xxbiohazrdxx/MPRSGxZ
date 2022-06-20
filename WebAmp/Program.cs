@@ -1,6 +1,7 @@
 using WebAmp.Services;
 using WebAmp.Settings;
 using WebAmp.Hubs;
+using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +11,8 @@ builder.Services.AddSingleton<IAmplifierService, AmplifierService>();
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSignalR();
+
+builder.Services.AddMudServices();
 
 var app = builder.Build();
 
