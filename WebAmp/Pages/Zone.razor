@@ -2,42 +2,34 @@
 
 <PageTitle>Zones</PageTitle>
 
-@using WebAmp.Services
-@using WebAmp.Settings
-@using Microsoft.Extensions.Options
-
 @inject IAmplifierService AmplifierService
 
-<h1>Output zones</h1>
-
-<EditForm Model="@AmplifierService">
-	<table class="table">
-		<thead>
-			<tr>
-				<th>Amp</th>
-				<th>Zone</th>
-				<th>Active</th>
-				<th>Name</th>
-			</tr>
-		</thead>
-		<tbody>
-				@foreach (var CurrentAmplifier in AmplifierService.Amplifiers)
-				{
-					@foreach (var CurrentZone in CurrentAmplifier.Zones)
+<MudPaper Class="pa-3" Elevation="4">
+	<MudStack>
+		<MudText Typo="Typo.h5">Zones</MudText>
+		<MudSimpleTable>
+			<thead>
+				<tr>
+					<th>Amp</th>
+					<th>Zone</th>
+					<th>Active</th>
+					<th>Name</th>
+				</tr>
+			</thead>
+			<tbody>
+					@foreach (var CurrentAmplifier in AmplifierService.Amplifiers)
 					{
-						<tr>
-							<td><label>@CurrentAmplifier.ID</label></td>
-							<td><label>@CurrentZone.ZoneID</label></td>
-							<td>
-								<label class="switch">
-									<InputCheckbox @bind-Value="@CurrentZone.Enabled" />
-									<span class="slider round"></span>
-								</label>
-							</td>
-							<td><InputText @bind-Value="@CurrentZone.Name" /></td>
-						</tr>
+						@foreach (var CurrentZone in CurrentAmplifier.Zones)
+						{
+							<tr>
+								<td><MudText Typo="Typo.body1">@CurrentAmplifier.ID</MudText></td>
+								<td><MudText Typo="Typo.body1">@CurrentZone.ZoneID</MudText></td>
+								<td><MudSwitch @bind-Checked="@CurrentZone.Enabled" Color="Color.Primary" /></td>
+								<td><MudInput MaxLength="25" @bind-Value="@CurrentZone.Name" /></td>
+							</tr>
+						}
 					}
-				}
-		</tbody>
-	</table>
-</EditForm>
+			</tbody>
+		</MudSimpleTable>
+	</MudStack>
+</MudPaper>

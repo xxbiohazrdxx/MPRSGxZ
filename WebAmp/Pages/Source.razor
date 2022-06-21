@@ -2,38 +2,29 @@
 
 <PageTitle>Sources</PageTitle>
 
-@using WebAmp.Services
-@using WebAmp.Settings
-@using Microsoft.Extensions.Options
-
 @inject IAmplifierService AmplifierService
-@inject IOptionsMonitor<AmplifierStackSettings> Settings
 
-<h1>Input sources</h1>
-
-<EditForm Model="@AmplifierService">
-	<table class="table">
-		<thead>
-			<tr>
-				<th>Input</th>
-				<th>Active</th>
-				<th>Name</th>
-			</tr>
-		</thead>
-		<tbody>
-			@foreach (var Current in AmplifierService.Sources)
-			{
+<MudPaper Class="pa-3" Elevation="4">
+	<MudStack>
+		<MudText Typo="Typo.h5">Sources</MudText>
+		<MudSimpleTable>
+			<thead>
 				<tr>
-					<td><label>@Current.ID</label></td>
-					<td>
-						<label class="switch">
-						  <InputCheckbox @bind-Value="@Current.Enabled" />
-						  <span class="slider round"></span>
-						</label>
-					</td>
-					<td><InputText @bind-Value="@Current.Name" /></td>
+					<th>Input</th>
+					<th>Active</th>
+					<th>Name</th>
 				</tr>
-			}
-		</tbody>
-	</table>
-</EditForm>
+			</thead>
+			<tbody>
+				@foreach (var Current in AmplifierService.Sources)
+				{
+					<tr>
+						<td><MudText Typo="Typo.body1">@Current.ID</MudText></td>
+						<td><MudSwitch @bind-Checked="@Current.Enabled" Color="Color.Primary" /></td>
+						<td><MudInput MaxLength="25" @bind-Value="@Current.Name" /></td>
+					</tr>
+				}
+			</tbody>
+		</MudSimpleTable>
+	</MudStack>
+</MudPaper>
