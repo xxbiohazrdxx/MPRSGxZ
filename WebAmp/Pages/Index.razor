@@ -6,15 +6,15 @@
 
 <MudSwipeArea OnSwipe="@OnSwipe">
 	<MudStack>
-		<MudPaper Class="pa-3">
+		<MudPaper Class="pa-3" Elevation="4">
 			<MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
 				<MudIconButton Icon="@Icons.Filled.ChevronLeft" Color="Color.Primary" OnClick="PreviousZone"/>
-				<MudText Typo="Typo.h4">@CurrentZone.Name</MudText>
+				<MudText Typo="Typo.h5">@CurrentZone.Name</MudText>
 				<MudIconButton Icon="@Icons.Filled.ChevronRight" Color="Color.Primary" OnClick="NextZone"/>
 			</MudStack>
 		</MudPaper>
-		<MudPaper Class="pa-3">
-			<MudStack>
+		<MudPaper Class="pa-3" Elevation="4">
+			<MudStack Class="pa-3">
 				<MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
 					<MudStack Row="true">
 						<MudIcon Icon="@Icons.Filled.PowerSettingsNew" Color="Color.Primary" />
@@ -37,31 +37,40 @@
 					<MudSelect disabled="@(!CurrentZone.Power)" @bind-Value="@CurrentZone.Source">
 						@foreach (var Current in AmplifierService.Sources.Where(x => x.Enabled))
 						{
-							//<MudSelectItem value=@Current.ID>@Current.Name</MudSelectItem>
+							<MudSelectItem Value="@Current.ID">@Current.Name</MudSelectItem>
 						}
 					</MudSelect>
 				</MudStack>
 			</MudStack>
 		</MudPaper>
-		<MudPaper Class="pa-3">
+		<MudPaper Class="pa-3" Elevation="4">
 			<MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
 				<MudIconButton Icon="@Icons.Filled.VolumeDown" disabled="@(!CurrentZone.Power)" Color="Color.Primary" OnClick="VolumeDown"/>
 				<MudSlider @bind-Value="@CurrentZone.Volume" disabled="@(!CurrentZone.Power)" Variant="Variant.Filled" Min="0" Max="38" Step="1" Immediate="false"/>
 				<MudIconButton Icon="@Icons.Filled.VolumeUp" disabled="@(!CurrentZone.Power)" Color="Color.Primary" OnClick="VolumeUp"/>
 			</MudStack>
 		</MudPaper>
-		<MudExpansionPanels>
+		<MudExpansionPanels Elevation="4">
 			<MudExpansionPanel Text="Audio Settings">
-				<MudStack Row="true" Justify="Justify.SpaceBetween">
-					<MudText Typo="Typo.body1">Balance</MudText>
-					<MudSlider @bind-Value="@CurrentZone.Balance" disabled="@(!CurrentZone.Power)" Variant="Variant.Filled" Min="0" Max="14" Step="1" Immediate="false"/>
+				<MudStack Row="true" Justify="Justify.SpaceBetween" Class="pb-3">
+					<MudStack Row="true">
+						<MudIcon Icon="@Icons.Filled.Equalizer" Color="Color.Primary" />
+						<MudText Typo="Typo.body1">Treble</MudText>
+					</MudStack>
+					<MudSlider @bind-Value="@CurrentZone.Treble" disabled="@(!CurrentZone.Power)" Variant="Variant.Filled" Min="0" Max="14" Step="1" Immediate="false"/>
 				</MudStack>
-				<MudStack Row="true" Justify="Justify.SpaceBetween">
-					<MudText Typo="Typo.body1">Treble</MudText>
-					<MudSlider @bind-Value="@CurrentZone.Balance" disabled="@(!CurrentZone.Power)" Variant="Variant.Filled" Min="0" Max="14" Step="1" Immediate="false"/>
+				<MudStack Row="true" Justify="Justify.SpaceBetween" Class="pb-3">
+					<MudStack Row="true">
+						<MudIcon Icon="@Icons.Filled.Equalizer" Color="Color.Primary" />
+						<MudText Typo="Typo.body1">Bass</MudText>
+					</MudStack>
+					<MudSlider @bind-Value="@CurrentZone.Bass" disabled="@(!CurrentZone.Power)" Variant="Variant.Filled" Min="0" Max="14" Step="1" Immediate="false"/>
 				</MudStack>
-				<MudStack Row="true" Justify="Justify.SpaceBetween">
-					<MudText Typo="Typo.body1">Bass</MudText>
+				<MudStack Row="true" Justify="Justify.SpaceBetween" Class="pb-3">
+					<MudStack Row="true">
+						<MudIcon Icon="@Icons.Filled.AlignHorizontalCenter" Color="Color.Primary" />
+						<MudText Typo="Typo.body1">Balance</MudText>
+					</MudStack>
 					<MudSlider @bind-Value="@CurrentZone.Balance" disabled="@(!CurrentZone.Power)" Variant="Variant.Filled" Min="0" Max="14" Step="1" Immediate="false"/>
 				</MudStack>
 			</MudExpansionPanel>

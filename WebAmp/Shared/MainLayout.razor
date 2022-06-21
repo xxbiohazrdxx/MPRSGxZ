@@ -8,11 +8,11 @@
 <MudThemeProvider/>
 
 <MudLayout>
-    <MudOverlay @bind-Visible="@(!IsConnected)" DarkBackground="true" AutoClose="true">
+    <MudOverlay @bind-Visible="IsConnecting" DarkBackground="true" AutoClose="true">
         <MudText>Reconnecting</MudText>
         <MudProgressCircular Color="Color.Primary" Indeterminate="true"/>
     </MudOverlay>
-    <MudAppBar Elevation="1">
+    <MudAppBar Elevation="4" Dense="true">
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@ToggleDrawer" />
         <MudSpacer />
         <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" Link="https://github.com/xxbiohazrdxx/MPRSGxZ" Target="_blank" />
@@ -20,8 +20,8 @@
     <MudDrawer @bind-Open="@open" ClipMode="DrawerClipMode.Docked" Elevation="1" Variant="@DrawerVariant.Responsive">
         <NavMenu />
     </MudDrawer>
-    <MudMainContent Class="pt-4 px-4">
-        <MudContainer Class="mt-16 px-4" MaxWidth="MaxWidth.False">
+    <MudMainContent Class="pt-2 px-2">
+        <MudContainer Class="mt-14 px-2" MaxWidth="MaxWidth.False">
             <CascadingValue Value="@AmpHubConnection">
                 @Body
             </CascadingValue>
@@ -32,9 +32,7 @@
 @code
 {
     private HubConnection? AmpHubConnection;
-    public bool IsConnected = false;
-    //public bool Connected { get {return IsConnected;} set { } }
-    //public bool IsConnected => AmpHubConnection?.State == HubConnectionState.Connected;
+    public bool IsConnecting = true;
 
     bool open = false;
 
@@ -51,7 +49,7 @@
                                 .Build();
 
         await AmpHubConnection.StartAsync();
-        IsConnected = true;
+        IsConnecting = false;
         StateHasChanged();
     }
 }
